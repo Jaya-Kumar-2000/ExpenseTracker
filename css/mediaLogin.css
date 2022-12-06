@@ -1,0 +1,29 @@
+@media (max-width: 360px){
+    .container{
+        min-width: 240px
+    }
+    .logo{
+        height: 45px;
+        width: 45px;
+    }
+    .title{
+        font-size: 1.1rem;
+    }   
+    .registerBtn, .loginBtn{
+        font-size: .9rem;
+    }
+    input{
+        height: 35px;
+
+    }
+    .userDP{
+        width: 35px;
+        height: 35px;
+    }
+    .userNameDiv input{
+        width: 180px;
+    }
+    .userDP i{
+        font-size: 1.2rem;
+    }
+}

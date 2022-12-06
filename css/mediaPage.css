@@ -1,0 +1,377 @@
+@media (max-width: 1100px){
+    .filterBox{
+        position: fixed;
+        right: -100%;
+        top: 0;
+        z-index: 2;
+	    transition: .2s ease-out;
+    }
+    .filterBtn{
+        display: block;
+    }
+
+    .SearchBox{
+        padding-right: 0;
+    }
+    .allTransactionDiv{
+        margin-right: 0;
+    }
+    .transactionArticle .innerChild{
+        width: 100%;
+        padding: 10px;
+    }
+    .dashBoard{
+        padding: 10px;
+    }
+
+}    
+@media (max-width: 1800px) and (min-width: 1325px){ 
+    main{
+        width: 90%;
+    }
+}    
+@media (min-width: 980px) and (max-width: 1325px){
+    main{
+        width: 100%;
+    }
+    .secondDiv{
+        background-size: 55% !important;
+    } 
+}
+@media (max-width: 980px){
+    main{
+        width: 100%;
+    }
+    article .firstDiv{
+    	grid-template-columns: repeat(2, 1fr);
+    } 
+    table{
+        font-size: 15px;
+    }
+    td, th{
+        padding: 10px ;
+        text-align: center;
+    }
+    .secondDiv{
+        background-size: 60% !important;
+    } 
+}
+
+@media (max-width: 786px){
+    main{
+        width: 100%;
+    }
+    .info{
+        position: fixed;
+        left: -100%;
+        z-index: 2;
+	    transition: .2s ease-out;
+    }
+    .editContainer{
+        height: 100%;
+        top: 0;
+    }
+    .logo{
+        display: none;
+    }
+    .imageDiv, .linksDiv{
+        padding: 35px 0;
+    }
+    main .mainContainer{
+        width: 100%;
+    }
+    .mainContainer .navbar-header{
+        display: flex;
+    } 
+    article .firstDiv,.secondDiv{
+        margin-top: 15px;
+    } 
+    .secondDiv .chartBox{
+        width: 400px;
+    }  
+    table{
+        font-size: 14px;
+    }
+    td, th{
+        padding: 10px 6px;
+    }
+    .filterBtn{
+        display: none;
+    }
+    .secondDiv{
+        background-size: 55% !important;
+    } 
+}
+
+@media (max-width: 650px){
+    .NoDataFoundErr{
+        width: 80%;
+        padding: 0 21px;
+        text-align: center;
+    }
+    .empty-state__message{
+            font-size: 1.3rem;
+    }
+    .empty-state__help{
+        line-height: 20px;
+    }
+    .secondDiv{
+        background-size: 65% !important;
+    }
+}
+
+@media (max-width: 530px){
+    .popUpContainer .popupBox{
+        width: 80%;
+    }
+    .secondDiv{
+        background-size: 70% !important;
+    }
+    .secondDiv h2,.noRecentTrans{
+        font-size: 15px;
+    }    
+}
+
+
+@media (max-width: 480px){
+    .imageDiv, .linksDiv{
+        padding: 30px 0;
+    }
+    .logoutBtn{
+        margin-top: 30px;
+    }
+    .firstDiv div{
+        height: 50px;
+    }
+    .firstDiv div span{
+        font-size: 1.2rem  ;
+    }
+    .firstDiv div p{
+        font-size: 11px;
+    }
+    .dashBoard>div{
+        margin-top: 10px;
+    }
+    .secondDiv{
+        margin-top: 20px !important;
+        height: 380px !important;
+    }
+    .secondDiv .chartBox{
+        width: 330px;
+    }
+    table{
+        font-size: 10px;
+    }
+    td, th{
+        padding: 10px 5px;
+    }
+    .thirdDiv > h1{
+        font-size: 15px;
+    }
+    .popUpContainer .popupBox{
+        width: 90%;
+        height: auto;
+    }
+    .popupBox div input:not([type=radio]){
+        margin: 7px 0;
+    }
+    .popupBox .date > div{
+        width: 100%;
+    }  
+    .popupBox .date > div input{
+        width: 100%;
+    }
+    .popupBox div input:not([type=radio]){
+        margin: 5px 0;
+    }  
+    .popupBox > div{
+        margin: 5px 0 !important;
+    }
+    .popupBox .radio{
+        margin: 10px 0  !important;
+    }
+    .SearchBox .search{
+        min-width: 290px;
+    }
+    .SearchBox .newTransaction{
+        min-width: 35px;
+    }
+    .popupBox *{
+        font-size: 14px !important;
+    }
+    .CategoryAndPaymode{
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .NoDataFoundErr{
+        height: 300px;
+        width: 85%;
+        padding: 0 15px;
+    }
+    .empty-state__message{
+        font-size: 1.1rem;
+    }
+    .empty-state__help{
+        line-height: 17px;
+        font-size: 0.775rem;
+    }
+    .thirdDiv{
+        min-height: 100px !important;
+    }
+    .secondDiv h2,.noRecentTrans{
+        font-size: 13px;
+    }  
+}    
+@media (max-width: 360px){
+
+    .info{
+        width: 150px;
+    }
+    .imageDiv, .linksDiv{
+        padding: 25px 0;
+    }
+    .profileImg{
+        width: 80px;
+        height: 80px;
+        background-size: 110px;
+    }
+    .linksDiv a{
+        border-radius: 5px;
+    }
+    .logoutBtn{
+        margin-top: 25px;
+    }
+    article .firstDiv{
+    	grid-template-columns: repeat(1, 1fr);
+        grid-gap: 7px;
+    } 
+    .secondDiv .chartBox{
+        width: 255px;
+    }
+    table{
+        font-size: 8px;
+    }
+    td, th{
+        padding: 6px 3px;
+    }
+    .thirdDiv > h1{
+        font-size: 18px;
+        padding: 8px 10px;
+    }
+    .popUpContainer .popupBox{
+        width: 95%;
+        padding: 5px 5px 0;
+    } 
+    .popupBox .radio {
+        margin: 5px 0 0 !important;
+    }
+    .dropDown{
+        margin: 0;
+    }    
+    .SearchBox .search{
+        min-width: 200px;
+    }
+    .SearchBox .newTransaction{
+        min-width: 35px;
+    }
+    input[type=checkbox]{
+        height: 12px;
+        width: 12px;
+    }
+    .transactionArticle .filterBox{
+        min-width: 200px;
+        margin-left: 0;
+    }
+    .transactionArticle .filterBox > div{
+        height: 45%;
+    }
+
+    .filterBox input{
+        margin: 5px 0 !important;
+    }
+    .filterBox *{
+        font-size: 13px ;
+    }
+    .filterBox h2 i{
+        font-size: 1.3rem;
+    }
+    .filterBox .cashflow > div span{
+        margin: 5px 0;
+    }
+    .popupBox *{
+        font-size: 13px !important;
+    }
+    .NoDataFoundErr{
+        height: 260px;
+        padding: 0 20px;
+    }
+    .errorIcon{
+        height: 150px;
+        width: 150px;
+    }
+    .empty-state__message{
+        font-size: 1rem;
+    }
+    .empty-state__help{
+        line-height: 14px;
+        font-size: 0.725rem;
+    } 
+    .secondDiv{
+        background-size: 90% !important;
+    }   
+    .thirdDiv{
+        min-height: 80px !important;
+    }
+    .secondDiv h2,.noRecentTrans{
+        font-size: 12px;
+    }   
+}       
+
+@media (max-width: 280px){
+    .navbar-brand{
+        background-position: 2px;
+    }
+    table{
+        font-size: 7px;
+    }
+    td, th{
+        padding: 4px;
+    }
+    .thirdDiv > h1{
+        font-size: 16px;
+        padding: 6px 10px;
+    }
+    .popupBox .date > div{
+        margin: 4px 0;
+    }  
+    .popupBox .date > div input{
+        margin: 0;
+    }  
+    .popupBox div input:not([type=radio]){
+        height: 25px;
+    }
+
+    .NoDataFoundErr{
+        height: 220px;
+        padding: 0 10px;
+    }
+    .errorIcon{
+        height: 130px;
+        width: 130px;
+    }
+    .empty-state__message{
+        font-size: .855rem;
+    }
+    .empty-state__help{
+        line-height: 12px;
+        font-size: 0.725rem;
+    } 
+    .thirdDiv{
+        min-height: 70px !important;
+    }
+    .secondDiv{
+        background-size: 100% !important;
+    }
+    .secondDiv h2,.noRecentTrans{
+        font-size: 10px;
+    }        
+}   

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/mediaPage.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <link rel="icon"
+    href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsxawUWUUSR_WEyakYP9UMXL9Cs2bxK3Xgig&usqp=CAU"
+    type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  <main>
+    <section class="info">
+      <span class="userIDnumber"></span>
+      <figure class="logo"></figure>
+
+      <div class="imageDiv">
+        <figure class="profileImg">
+          <div class="editDiv showEditPopUP">
+            <i class="fa-regular showEditPopUP fa-pen-to-square"></i>
+            <span class="showEditPopUP">EDIT</span>
+          </div>
+        </figure>
+        <p class="userName"></p>
+        <div class="CurrentBalace">
+          <span class="walletImg"></span>
+          <p class="amount"></p>
+        </div>
+      </div>
+
+      <div class="linksDiv">
+        <a href="#DashBoard" class="a active dashboardLink" onclick="event.preventDefault()">Dashboard</a>
+        <a href="#Transaction" class="a transcationLink" id='transBtn'>Transaction</a>
+      </div>
+
+      <button class="logoutBtn" type="button">Sign Out <i class="fa fa-sign-out"></i></button>
+
+      <div class="editContainer">
+        <div class="userInfo">
+          <figure>
+            <div class="cameraImg showEditProfileopt">
+              <i class="fa-solid fa-camera showEditProfileopt"></i>
+            </div>
+          </figure>
+          <div class="userNameMail">
+            <h3></h3>
+            <h6></h6>
+          </div>
+
+          <ul class="listOfOptions">
+            <li class="chengeDPli"><input type="file" class="changeUserDP chengeDPli" title=""
+                accept=".jpg, .jpeg, .png" /><span class="updateNew chengeDPli">Update New</span></li>
+            <li class="removeBtn">Remove</li>
+          </ul>
+
+        </div>
+
+        <form class="inputInfos">
+          <div class="userInfoEdit">
+            <label>Your ID: </label>
+            <input type="text" class="UserID" value="2354332231" readonly />
+          </div>
+
+          <div class="userInfoEdit">
+            <label for="UserNameInput">Enter New User Name: </label>
+            <input type="text" class="UserNameInput" id="UserNameInput" autocomplete="off"
+              placeholder="name: Min 5 Characters" autocomplete="off" />
+          </div>
+
+          <div class="userInfoEdit">
+            <label for="UserpassInput">Enter New PIN (6 digits): </label>
+            <div class="passworEdit">
+              <input type="password" class="UserpassInput" id="UserpassInput" 
+                placeholder="Password: 534432" oncopy="return false" onpaste="return false" oncut="return false" />
+              <div class="eyeIcon">
+                <i class="fa-regular fa-eye" id="showPassword" ></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="userInfoEdit">
+            <label for="reEnterPass">Re-Enter New PIN (6 digits): </label>
+            <div class="passworEdit">
+              <input type="password" class="reEnterPass" id="reEnterPass"
+                placeholder="Confirm Password" oncopy="return false" onpaste="return false" oncut="return false" />
+              <div class="eyeIcon">
+                <i class="fa-regular fa-eye" id="showPassword" ></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="userInfoEdit editCancelBtn">
+            <button type="button" class="cancelBtn">Cancel</button>
+            <button type="button" class="saveBtn">Save</button>
+          </div>
+        </form>
+
+      </div>
+    </section>
+
+
+    <div id="overlay" class="dialog"></div>
+
+    <section class="mainContainer">
+      <div class="navbar-header">
+        <i class="fa-solid fa-bars showInfo"></i>
+        <span class="navbar-brand"></span>
+        <i class="fa-solid fa-sliders filterMenu"></i>
+      </div>
+      <template class="dashBoardSection">
+
+        <article class="dashBoard">
+          <h1 class="dashBoardHead">Dashboard</h1>
+
+          <div class="firstDiv">
+            <div class="income">
+              <span></span>
+              <p>Income</p>
+            </div>
+            <div class="expenses">
+              <span></span>
+              <p>Expenses</p>
+            </div>
+            <div class="balance">
+              <span></span>
+              <p>Balance</p>
+            </div>
+            <div class="transcation">
+              <span></span>
+              <p>Transactions</p>
+            </div>
+          </div>
+
+          <div class="secondDiv">
+            <h1>Total Expenses</h1>
+            <div class="chartBox">
+              <canvas id="myChart"></canvas>
+            </div>
+
+            <h2>It looks like the Expense doesn't exist.</h2>
+          </div>
+          <div class="thirdDiv">
+            <h1>Recent Transaction</h1>
+            <table class="lastFiveTransaction">
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+      </template>
+
+      <template class="noTranaction">
+        <div class="NoDataFoundErr">
+          <figure class="errorIcon"></figure>
+          <div class="empty-state__message">No records has been added yet.</div>
+          <div class="empty-state__help">Add a new record by simpley clicking the button on top right side.</div>
+        </div>
+      </template>
+
+
+      <template class="tranactionDiv">
+
+        <article class="transactionArticle">
+          <div class="innerChild">
+            <h1 class="dashBoardHead">All Transactions</h1>
+
+            <div class="SearchBox">
+              <input type="text" class="search" placeholder="search" autofocus="off">
+              <button type="button" class="addTransBtn newTransaction">ADD TRANSACTION</button>
+              <button type="button" class="addTransBtn filterBtn filterMenus">FILTER</button>
+
+            </div>
+
+            <div class="allTransactionDiv">
+
+            </div>
+
+
+
+          </div>
+          <div class="filterBox">
+            <h2><i class="fa-solid fa-sliders"></i> Filters</h2>
+            <form>
+              <div class="range">
+                <div class="from">
+                  <label>From:</label>
+                  <input type="date" name="Date" class="startingDate">
+                </div>
+                <div class="to">
+                  <label>To:</label>
+                  <input type="date" name="Date" class="endingDate">
+                </div>
+                <p class="filterError"></p>
+              </div>
+
+              <div class="cashflow">
+                <p>Cashflow</p>
+                <div>
+                  <span>
+                    <input id="incomeCheck"  class="cashFlowCheck" type="checkbox" value="Income" >
+                    <label for="incomeCheck">Income</label>
+                  </span>
+                  <span>
+                    <input id="expenseCheck" class="cashFlowCheck" type="checkbox" value="Expense">
+                    <label for="expenseCheck">Expense</label>
+                  </span>
+                </div>
+              </div>
+
+              <div class="cashflow">
+                <p>Payment Mode</p>
+                <div>
+                  <span>
+                    <input id="cash" class="payModeCheck" type="checkbox" value="Cash">
+                    <label for="cash">Cash</label>
+                  </span>
+                  <span>
+                    <input id="debit" class="payModeCheck" value="Debit Card" type="checkbox">
+                    <label for="debit">Debit Card</label>
+                  </span>
+                  <span>
+                    <input id="credit" class="payModeCheck" value="Credit Card" type="checkbox">
+                    <label for="credit">Credit Card</label>
+                  </span>
+                  <span>
+                    <input id="upi" class="payModeCheck" value="UPI" type="checkbox">
+                    <label for="upi">UPI</label>
+                  </span>
+                </div>
+              </div>
+
+
+              <div class="category">
+                <label>Choose a Category</label>
+                <div class="dropDown">
+                  <div class="DropDownBody categoryList">
+                    <h4><b class="category-icon Business"></b><span>Business</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Business" /></h4>
+                    <h4><b class="category-icon Rent"></b><span>Rent</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Rent" /></h4>
+                    <h4><b class="category-icon Food"></b><span>Food</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Food" /></h4>
+                    <h4><b class="category-icon Bills"></b><span>Bills</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Bills" /></h4>
+                    <h4><b class="category-icon Utilities"></b><span>Utilities</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Utilities" /></h4>
+                    <h4><b class="category-icon Transportation"></b><span>Transportation</span><input
+                        class="filterCheck" name="filterCategory" type="checkbox" value="Transportation" /></h4>
+                    <h4><b class="category-icon Insurance"></b><span>Insurance</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Insurance" /></h4>
+                    <h4><b class="category-icon Shopping"></b><span>Shopping</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Shopping" /></h4>
+                    <h4><b class="category-icon Entertainment"></b><span>Entertinment</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Entertinment" /></h4>
+                    <h4><b class="category-icon Salary"></b><span>Salary</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Salary" /></h4>
+                    <h4><b class="category-icon Health"></b><span>Health Care</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Health Care" /></h4>
+                    <h4><b class="category-icon Housing"></b><span>Housing</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Housing" /></h4>
+                    <h4><b class="category-icon Extra-Income"></b><span>Extra Income</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Extra Income" /></h4>
+                    <h4><b class="category-icon Education"></b><span>Education</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Education" /></h4>
+                    <h4><b class="category-icon Clothing"></b><span>Clothing</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Clothing" /></h4>
+                    <h4><b class="category-icon Taxes"></b><span>Taxes</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Taxes" /></h4>
+                    <h4><b class="category-icon Interests"></b><span>Interests</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Interests" /></h4>
+                    <h4><b class="category-icon Miscellaneous"></b><span>Miscellaneous</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Miscellaneous" /></h4>
+                    <h4><b class="category-icon Personal"></b><span>Personal Care</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Personal Care" /></h4>
+                    <h4><b class="category-icon Other"></b><span>Other</span><input class="filterCheck"
+                        name="filterCategory" type="checkbox" value="Other" /></h4>
+                  </div>
+
+                  <div class="DropDownHead categoryHead filterCatHead"><span class="filterCatHead">Select Category</span> <i
+                    class="fa-solid fa-caret-down filterCatHead"></i></div>
+                </div>
+              </div>
+
+              <div class="AmountValue">
+                <p>Amount</p>
+                <div class="amountRange">
+                  <h1>Min <input type="number" class="minValue" placeholder="0"/></h1>-
+                  <h1>Max <input type="number" class="maxValue" placeholder="0"  /></h1>
+                </div>
+              </div>
+
+              
+
+              <div class="filterAndCancelBtn">
+                <button type="reset" class="resetFilterForm">Reset <i class="fa-solid fa-trash-arrow-up"></i></button>
+                <button type="button" class="submitFilter">Filter <i class="fa-solid fa-filter"></i></button>
+              </div>
+            </form>
+        </article>
+
+
+
+      </template>
+
+
+    </section>
+  </main>
+
+
+  <template class="addTransactionPopup">
+    <section class="popUpContainer closeBtn">
+      <form class="popupBox">
+        <h1>New Transaction<i class="fa-solid fa-xmark closeBtn"></i></h1>
+        <div class="radio">
+          <div>
+            <input type="radio" id="income" class="optradio incomeRadio" name="optradio" value="Income" checked>
+            <label for="income" class="radio-inline">Income</label>
+          </div>
+          <div>
+            <input type="radio" id="expense" class="optradio expenseRadio" name="optradio" value="Expense">
+            <label for="expense" class="radio-inline">Expense</label>
+          </div>
+        </div>
+        <div class="date">
+          <div>
+            <label>Choose a Date</label>
+            <input type="date" name="Date" class="input transDate" >
+          </div>
+          <div>
+            <label>Enter the Amount</label>
+            <input type="number" class="amount" class="input"  name="amount" min="0" placeholder="Enter the amount">
+          </div>
+        </div>
+        <div class="CategoryAndPaymode">
+          <div>
+            <label>Choose a Category</label>
+            <div class="dropDown">
+              <div class="DropDownHead categoryHead newCatHead"><span>Select Category</span> <i class="fa-solid fa-caret-down newCat"></i></div>
+              <template id="incomeDropDown">
+                <div class="DropDownBody categoryList newCatList" >
+                  <h4><b class="category-icon Salary"></b><span>Salary</span></h4>
+                  <h4><b class="category-icon Interests"></b><span>Interests</span></h4>
+                  <h4><b class="category-icon Business"></b><span>Business</span></h4>
+                  <h4><b class="category-icon Extra-Income"></b><span>Extra Income</span></h4>
+                </div>
+              </template>
+
+              <template id="ExpenseDropDown">
+                <div class="DropDownBody categoryList newCatList" >
+                  <h4><b class="category-icon Rent"></b><span>Rent</span></h4>
+                  <h4><b class="category-icon Food"></b><span>Food</span></h4>
+                  <h4><b class="category-icon Bills"></b><span>Bills</span></h4>
+                  <h4><b class="category-icon Utilities"></b><span>Utilities</span></h4>
+                  <h4><b class="category-icon Transportation"></b><span>Transportation</span></h4>
+                  <h4><b class="category-icon Insurance"></b><span>Insurance</span></h4>
+                  <h4><b class="category-icon Shopping"></b><span>Shopping</span></h4>
+                  <h4><b class="category-icon Entertainment"></b><span>Entertinment</span></h4>
+                  <h4><b class="category-icon Health"></b><span>Health Care</span></h4>
+                  <h4><b class="category-icon Housing"></b><span>Housing</span></h4>
+                  <h4><b class="category-icon Education"></b><span>Education</span></h4>
+                  <h4><b class="category-icon Clothing"></b><span>Clothing</span></h4>
+                  <h4><b class="category-icon Taxes"></b><span>Taxes</span></h4>
+                  <h4><b class="category-icon Miscellaneous"></b><span>Miscellaneous</span></h4>
+                  <h4><b class="category-icon Personal"></b><span>Personal Care</span></h4>
+                  <h4><b class="category-icon Other"></b><span>Other</span></h4>
+                </div>
+              </template>
+
+            </div>
+
+
+          </div>
+
+          <div>
+            <label>Payment Mode</label>
+            <div class="dropDown">
+              <div class="DropDownBody paymodeList" >
+                <h4><b class="category-icon Cash"></b><span>Cash</span></h4>
+                <h4><b class="category-icon DebitCard"></b><span>Debit Card</span></h4>
+                <h4><b class="category-icon CreditCard"></b><span>Credit Card</span></h4>
+                <h4><b class="category-icon UPI"></b><span>UPI</span></h4>
+              </div>
+              <div class="DropDownHead payMode paymodeOpt"><span class="paymodeOpt paymentMethod">Select Mode</span><i class="fa-solid fa-caret-down paymodeOpt"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="desc">
+          <div>
+            <label>Description</label>
+            <input type="text"  class="input description"  placeholder="Enter Description" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="twoButtons">
+          <span class="errMsgNewTrans">Please provide a valid Input</span>
+          <button type="button" class="button1 closeBtn">CANCEL</button>
+          <button type="button" class="button2 addTransaction">ADD</button>
+
+        </div>
+      </form>
+
+    </section>
+
+
+  </template>
+
+
+  <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-storage.js"></script>
+  <script type="text/javascript" src="javascript/firebaseLib.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <script type="text/javascript" src="javascript/model.js"></script>
+  <script type="text/javascript" src="javascript/view.js"></script>
+  <script type="text/javascript" src="javascript/script.js"></script>
+  <script type="text/javascript" src="javascript/control.js"></script>
+
+</body>
+
+</html>
