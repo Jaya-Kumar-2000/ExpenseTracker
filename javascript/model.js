@@ -1,3 +1,6 @@
+let _ = function (ele) {
+  return document.querySelector(ele);
+}
 class CreateObj {
   constructor(type, description, date, amount, id, category, payMode) {
     this.type = type;
@@ -92,6 +95,81 @@ class Model {
       totalTransaction: this.transactions.slice(0, 10).length
     }
   }
+
+  getFilterValue = () => {
+    let startingDate = _(".startingDate").value
+    let endingDate = _(".endingDate").value;
+    let cashFolwArr = [];
+    let payModeArr = [];
+    let filterCategoryArr = [];
+    let minValue = _(".minValue").value;
+    let maxValue = _(".maxValue").value;
+    let isDateCorrect = true;
+
+
+    if (startingDate != '' && endingDate != '') {
+      if (new Date(startingDate) > new Date(endingDate) || new Date(startingDate) > new Date()|| new Date(endingDate) > new Date()) {
+        startingDate = '';
+        endingDate = '';
+        isDateCorrect = false;
+        _(".filterError").innerText = "Please provide a valide Date";
+        this.showFilterError();
+      }
+    }
+    else if (startingDate != '' && endingDate == '' || startingDate == '' && endingDate != '') {
+      startingDate = '';
+      endingDate = '';
+      isDateCorrect = false;
+      _(".filterError").innerText = "Date field sholud not be empty";
+      this.showFilterError(startingDate, endingDate);
+    }
+
+    let cashFolwCheck = document.querySelectorAll('.cashFlowCheck');
+    for (var i = 0; i < cashFolwCheck.length; i++) {
+      if (cashFolwCheck[i].checked) {
+        let caskflowVal = cashFolwCheck[i].value;
+        if (this.incomeOrExpense.includes(caskflowVal)) {
+          cashFolwArr.push(caskflowVal);
+        }
+      }
+    }
+
+    let payModeCheck = document.querySelectorAll('.payModeCheck');
+    for (var i = 0; i < payModeCheck.length; i++) {
+      if (payModeCheck[i].checked) {
+        let paymodeValue = payModeCheck[i].value;
+        if (this.patmodeArr.includes(paymodeValue)) {
+          payModeArr.push(paymodeValue);
+        }
+      }
+    }
+
+    let selesctCat = document.querySelectorAll('.filterCheck');
+    for (var i = 0; i < selesctCat.length; i++) {
+      if (selesctCat[i].checked) {
+        let selectedCategories = selesctCat[i].value;
+        if (this.categoryArr.includes(selectedCategories)) {
+          filterCategoryArr.push(selectedCategories);
+        }
+      }
+    }
+
+    if (isDateCorrect) {
+      if (startingDate!=''||endingDate!=''||cashFolwArr.length != 0 || payModeArr.length != 0 || filterCategoryArr.length != 0 || minValue != '' || maxValue != '') {
+          console.log("some Value");
+      }
+    }
+  }
+
+     
+
+    // logoutWhileInactive = () => {
+    //     localStorage.setItem("lastOUT", new Date());
+    // }
+
+   
+   
+
 }
 
 

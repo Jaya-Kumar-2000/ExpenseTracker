@@ -315,7 +315,28 @@ li.removeBtn {
 	background-size: 100px;
     background-position: center;
     background-repeat: no-repeat;
+	position: relative;
 }
+/* 
+.continuous-1 {
+	height: inherit;
+	width: inherit;
+	border-radius: inherit;
+	background: 
+	  linear-gradient(90deg,#0001 33%,#0005 50%,#0001 66%)
+	  #f2f2f2;
+	background-size:300% 100%;
+	position: absolute;
+	top: 0;
+	animation: ct1 .8s infinite linear;
+  }
+  
+  @keyframes ct1 {
+	0% {background-position: right}
+  }
+   */
+
+
 
 .profileImg:hover .editDiv {
 	visibility: visible;
@@ -350,6 +371,7 @@ li.removeBtn {
     font-size: 1.3rem;
     letter-spacing: 1px;
 	text-align: center;
+	text-transform: capitalize;
 }
 
 .CurrentBalace {
@@ -1319,3 +1341,6 @@ input[type=checkbox] {
 	color: #fff;
 	background: #1fb8f0;
   }
+
+
+
