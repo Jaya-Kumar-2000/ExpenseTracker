@@ -9,17 +9,13 @@ class regiterModel {
 		this.otp;
 	}
 
-	_(ele) {
-		return document.querySelector(ele);
-	}
-
 	addEventForRegisterForm = () => {
-		this._(".registerUserName").addEventListener("input", this.checkRegisterInput);
-		this._(".registerUserEmail").addEventListener("input", this.checkRegisterInput);
-		this._(".registerPassword").addEventListener("input", this.checkRegisterInput);
-		this._(".registerRePassword").addEventListener("input", this.checkRegisterInput);
-		this._(".userImageGet").addEventListener("change", this.checkRegisterInput);
-		this._(".loginBtn").addEventListener("click", this.loginForm.showForm);
+		_(".registerUserName").addEventListener("input", this.checkRegisterInput);
+		_(".registerUserEmail").addEventListener("input", this.checkRegisterInput);
+		_(".registerPassword").addEventListener("input", this.checkRegisterInput);
+		_(".registerRePassword").addEventListener("input", this.checkRegisterInput);
+		_(".userImageGet").addEventListener("change", this.checkRegisterInput);
+		_(".loginBtn").addEventListener("click", this.loginForm.showForm);
 
 		document.querySelectorAll(".fa-eye").forEach((ecahEyeIcon) => {
 			ecahEyeIcon.addEventListener("click", this.loginForm.showPassword);
@@ -81,26 +77,26 @@ class regiterModel {
 	}	
 
 	addEVentsForOTPdiv = ()=>{
-		this._(".verifyotp").addEventListener("click",this.verifyOTP);
-		this._(".resendotp").addEventListener("click",this.sendOTP);
-		this._(".otpInput").addEventListener("input",()=>{
-			this._(".otpError").innerText ="";
+		_(".verifyotp").addEventListener("click",this.verifyOTP);
+		_(".resendotp").addEventListener("click",this.sendOTP);
+		_(".otpInput").addEventListener("input",()=>{
+			_(".otpError").innerText ="";
 		})
 	}
 
 
 	verifyOTP = ()=>{
-		let otpDIVval = this._(".otpInput").value;
+		let otpDIVval = _(".otpInput").value;
 		if(otpDIVval!='' && otpDIVval.match(/^[0-9]{4,4}$/g)){
 			if(otpDIVval==this.otp){
 				console.log("correct")
 			}
 			else{
-				this._(".otpError").innerText = "Sorry, You have entered invalid OTP";
+				_(".otpError").innerText = "Sorry, You have entered invalid OTP";
 			}
 		}
 		else{
-			this._(".otpError").innerText = "Please try to give a valid input";
+			_(".otpError").innerText = "Please try to give a valid input";
 		}
 	}
 
@@ -146,13 +142,13 @@ class regiterModel {
 					this.loginForm.redirectToMain()
 				}
 			})
-		this._(".regForm").reset();
+		_(".regForm").reset();
 	}
 
 	emailAlreadyExsit = () => {
-		this._(".EmailExist").classList.add("showErr");
+		_(".EmailExist").classList.add("showErr");
 		setTimeout(() => {
-			this._(".EmailExist").classList.remove("showErr");
+			_(".EmailExist").classList.remove("showErr");
 		}, 2000)
 	}
 
@@ -220,18 +216,18 @@ class regiterModel {
 
 		if (this.userName != undefined && this.emailVar != undefined && this.reEnterPassword != undefined) {
 			if (this.reEnterPassword == this.passwordVar) {
-				this._(".registerButton").disabled = false;
-				this._(".registerButton").classList.add("btnStyle");
+				_(".registerButton").disabled = false;
+				_(".registerButton").classList.add("btnStyle");
 				document.querySelector(".regForm").addEventListener("submit", this.registerUser);
 			}
 			else {
-				this._(".registerButton").disabled = true;
-				this._(".registerButton").classList.remove("btnStyle");
+				_(".registerButton").disabled = true;
+				_(".registerButton").classList.remove("btnStyle");
 			}
 		}
 		else {
-			this._(".registerButton").disabled = true;
-			this._(".registerButton").classList.remove("btnStyle");
+			_(".registerButton").disabled = true;
+			_(".registerButton").classList.remove("btnStyle");
 		}
 	}
 }

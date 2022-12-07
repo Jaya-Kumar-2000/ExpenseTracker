@@ -1,53 +1,54 @@
+_ = (ele) => {
+    return document.querySelector(ele);
+}
+
 class loginModel {
     constructor(status) {
         this.emailVar;
         this.passwordVar;
         this.userId;
+        this.init();
     }
-
-    _(ele) {
-        return document.querySelector(ele);
+    init = ()=>{
+        this.checkCookie();
+        window.addEventListener('focus', this.checkCookie);
     }
-
 
     checkCookie = () => {
-        // let isUserloggedIn = false;
-        // if (document.cookie.length != 0) {
-        //     let myArray = document.cookie.split(";");
-        //     let arr = myArray.map(x => {
-        //         return x.split("=");
-        //     });
-        //     arr.forEach(function (eachCookie) {
-        //         if (eachCookie[0] == "userLogin" && eachCookie[1] == true) {
-        //             isUserloggedIn = true;
-        //         }
-        //     });
-        //     if (isUserloggedIn) {
-        //         window.location.replace("index.html");
-        //     }
-        // }
+        let isUserloggedIn = false;
+        if (document.cookie.length != 0) {
+            let myArray = document.cookie.split(";");
+            let arr = myArray.map(x => {
+                return x.split("=");
+            });
+            arr.forEach(function (eachCookie) {
+                if (eachCookie[0] == "userLogin" && eachCookie[1] == "True") {
+                    isUserloggedIn = true;
+                }
+            });
+            console.log(isUserloggedIn)
+            if (isUserloggedIn) {
+                window.location.replace("index.html");
+            }
+        }
     }
 
     loginEventListeners = () => {
-        this._(".loginUserEmail").addEventListener("input", this.checkLoginInput);
-        this._(".loginPassword").addEventListener("input", this.checkLoginInput);
-        this._(".registerBtn").addEventListener("click", this.showForm);
+        _(".loginUserEmail").addEventListener("input", this.checkLoginInput);
+        _(".loginPassword").addEventListener("input", this.checkLoginInput);
+        _(".registerBtn").addEventListener("click", this.showForm);
 
-        this._(".fa-eye").addEventListener("click", this.showPassword);
-
-        window.addEventListener('focus', this.checkCookie);
-        window.onload = this.checkCookie;
-
+        _(".fa-eye").addEventListener("click", this.showPassword);
     }
 
     showForm = (e) => {
         e.preventDefault();
         if (e.target.classList.contains("registerBtn")) {
-            this._("title").innerText = "Register User";
+            _("title").innerText = "Register User";
             this.registerForm();
         }
         else {
-            this._("title").innerText = "Login User";
+            _("title").innerText = "Login User";
             this.loginForm();
         }
     };
@@ -78,7 +79,7 @@ class loginModel {
 		.then(data => {
             console.log(data)
 			if(data.status == "error"){
-				this._(".incorectpassWord").classList.add("showErr");
+				_(".incorectpassWord").classList.add("showErr");
 			}
 			else{
 				var encrypted = CryptoJS.AES.encrypt(`${data.user.id}`, "Secret Passphrase");
@@ -94,7 +95,7 @@ class loginModel {
     }
 
     checkLoginInput = (e) => {
-        this._(".incorectpassWord").classList.remove("showErr");
+        _(".incorectpassWord").classList.remove("showErr");
 
         if (e.target.classList.contains("loginUserEmail")) {
             this.emailVar = undefined;
@@ -125,35 +126,35 @@ class loginModel {
         }
 
         if (this.emailVar != undefined && this.passwordVar != undefined) {
-            this._(".loginButton").disabled = false;
-            this._(".loginButton").classList.add("btnStyle");
+            _(".loginButton").disabled = false;
+            _(".loginButton").classList.add("btnStyle");
             document.querySelector(".logForm").addEventListener("submit", this.logUnUser);
         }
         else {
-            this._(".loginButton").disabled = true;
-            this._(".loginButton").classList.remove("btnStyle");
+            _(".loginButton").disabled = true;
+            _(".loginButton").classList.remove("btnStyle");
         }
     }
 
     loginForm = () => {
-        this._(".forms").innerHTML = "";
-        let clonedTemplate = this._(".loginDiv").content.cloneNode(true);
-        this._(".forms").append(clonedTemplate);
+        _(".forms").innerHTML = "";
+        let clonedTemplate = _(".loginDiv").content.cloneNode(true);
+        _(".forms").append(clonedTemplate);
         this.loginEventListeners();
     }
 
     registerForm = () => {
-        this._(".forms").innerHTML = "";
-        let clonedTemplate = this._(".RegisterDiv").content.cloneNode(true);
-        this._(".forms").append(clonedTemplate);
+        _(".forms").innerHTML = "";
+        let clonedTemplate = _(".RegisterDiv").content.cloneNode(true);
+        _(".forms").append(clonedTemplate);
         new regiterModel().addEventForRegisterForm()
     }
 
     otpForm = ()=>{
-        this._(".forms").innerHTML = "";
-        let clonedTemplate = this._(".OTP-div").content.cloneNode(true);
-        this._(".forms").append(clonedTemplate);
-		this._(".loginBtn").addEventListener("click", this.loginForm);
+        _(".forms").innerHTML = "";
+        let clonedTemplate = _(".OTP-div").content.cloneNode(true);
+        _(".forms").append(clonedTemplate);
+		_(".loginBtn").addEventListener("click", this.loginForm);
     }
 
     

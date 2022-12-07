@@ -19,25 +19,12 @@ class Model {
     this.expense = 0;
     this.id = 0;
     this.lastMonthData;
-    this.userID = CryptoJS.AES.decrypt(localStorage.getItem("userID"), "Secret Passphrase").toString(CryptoJS.enc.Utf8)
   }
 
   addTransaction = (type, description, date, amount, category, payMode) => {
     this.transactions.push(new CreateObj(type, description, date, amount, this.id++, category, payMode));
     return this.transactions;
   }
-
-
-  getUserInfo = ()=>{
-    return fetch(`http://127.0.0.1:8089/api/v1/users/${this.userID}`)
-		.then(res => {
-			return res.json();
-		})
-		.then(data => {
-      return (data)
-		})
-  }
-
 
   seachTransaction = (inputText) => { //search based on description
     let filteredArray = this.transactions.filter(function (ele) {
@@ -54,7 +41,7 @@ class Model {
 
   expenseByCategory = () => {
     let obj = {}
-    
+
     this.lastMonthData.forEach(function (t) {
       if (t.type == 'Expense') {
         if (obj[t.category]) {
@@ -75,17 +62,17 @@ class Model {
     return this.transactions;
   }
 
-  lastMonthTrans = ()=>{
+  lastMonthTrans = () => {
     this.lastMonthData = this.transactions.slice().splice(-10);
   }
 
   transactionDetails = () => {
     this.income = 0;
     this.expense = 0;
-    this.balance=0;
-   
-    this.lastMonthData.forEach((eachTrans)=>{   
-      eachTrans.type=="Income"? this.income+= eachTrans.amount : this.expense+=eachTrans.amount;
+    this.balance = 0;
+
+    this.lastMonthData.forEach((eachTrans) => {
+      eachTrans.type == "Income" ? this.income += eachTrans.amount : this.expense += eachTrans.amount;
     })
 
     return {
@@ -108,7 +95,7 @@ class Model {
 
 
     if (startingDate != '' && endingDate != '') {
-      if (new Date(startingDate) > new Date(endingDate) || new Date(startingDate) > new Date()|| new Date(endingDate) > new Date()) {
+      if (new Date(startingDate) > new Date(endingDate) || new Date(startingDate) > new Date() || new Date(endingDate) > new Date()) {
         startingDate = '';
         endingDate = '';
         isDateCorrect = false;
@@ -155,21 +142,79 @@ class Model {
     }
 
     if (isDateCorrect) {
-      if (startingDate!=''||endingDate!=''||cashFolwArr.length != 0 || payModeArr.length != 0 || filterCategoryArr.length != 0 || minValue != '' || maxValue != '') {
-          console.log("some Value");
+      if (startingDate != '' || endingDate != '' || cashFolwArr.length != 0 || payModeArr.length != 0 || filterCategoryArr.length != 0 || minValue != '' || maxValue != '') {
+        console.log("some Value");
       }
     }
   }
 
-     
 
-    // logoutWhileInactive = () => {
-    //     localStorage.setItem("lastOUT", new Date());
-    // }
 
-   
-   
+  logoutWhileInactive = (e) => {
+    localStorage.setItem("lastOUT", new Date());
+  }
 
+
+  checkCookie = (e) => {
+    let isUserloggedIn = false;
+
+    if (document.cookie.length != 0) {
+      let myArray = document.cookie.split(";");
+      let arr = myArray.map(x => {
+        return x.split("=");
+      });
+      arr.forEach(function (eachCookie) {
+        if (eachCookie[0] == "userLogin" && eachCookie[1] == "True") {
+          isUserloggedIn = true;
+        }
+      });
+      if (isUserloggedIn) {
+        if (localStorage.getItem("userID") != null) {
+          let lastout = new Date(localStorage.getItem('lastOUT'));
+          var diff = (new Date().getTime() - lastout.getTime()) / 1000;
+          diff /= (60 * 60);
+          console.log(diff)
+          if (diff >= 1) {
+            document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            window.location.replace("login.html");
+            localStorage.removeItem("userID");
+          }
+        }
+        else {
+          document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+          window.location.replace("login.html");
+          localStorage.removeItem("userID");
+        }
+      }
+      else {
+        window.location.replace("login.html");
+      }
+    }
+    else {
+      window.location.replace("login.html");
+    }
+  }
+
+
+  getUserInfo = (uID) => {
+    return fetch(`http://127.0.0.1:8089/api/v1/users/${uID}`)
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        return (data)
+      })
+  }
+
+  editUserInfo = (uID,editData)=>{
+    fetch(`http://127.0.0.1:8089/api/v1/users/${uID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(editData)
+    })
+  }
 }
 
 

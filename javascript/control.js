@@ -17,15 +17,22 @@ class Control {
     this.conPass;
   }
 
+
+
+
   init = () => {
     this.loadData();
     this.dashBoardData();
-    // window.addEventListener('blur', this.model.logoutWhileInactive);   ///important to check again 
-    // window.addEventListener('focus', this.model.checkCookie);
+    window.addEventListener('blur', this.model.logoutWhileInactive);   
+    window.addEventListener('focus', this.model.checkCookie);
+
   }
 
   loadData = () => {
-    (this.model.getUserInfo()).then(response => {
+    this.model.checkCookie();
+
+    let uId = CryptoJS.AES.decrypt(localStorage.getItem("userID"), "Secret Passphrase").toString(CryptoJS.enc.Utf8);
+    (this.model.getUserInfo(uId)).then(response => {
       this.view.setUserInfo(response.user);
     })
     this.model.addTransaction('Income', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
@@ -200,6 +207,8 @@ class Control {
 
   eventForNewTransaction = () => {
     this.view.addNewTransaction();
+    this.setEventForNewTransDiv();
+    this.showDropDownNewTransaction();
     this.view.closeAddTransactionPopup();
   }
 
@@ -230,7 +239,7 @@ class Control {
       if (e.target.classList.contains("addTransaction")) {
         this.model.addTransaction(type, desc, date, amount, category, payMode);
       }
-      else {
+      if (e.target.classList.contains("editTansaction")) {
         this.totalClickedCheckbox = 0;
         let objToEdit = this.model.transactions[this.editingIndex];
         objToEdit.type = type;
@@ -357,8 +366,6 @@ class Control {
 
         var today = new Date(editTransVal.date);
         clonedTemplate.querySelector(".transDate").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);;
-
-
         clonedTemplate.querySelector(".amount").value = editTransVal.amount;
         clonedTemplate.querySelector(".newCatHead span").innerText = editTransVal.category;
         clonedTemplate.querySelector(".paymentMethod").innerText = editTransVal.payMode;
@@ -370,7 +377,6 @@ class Control {
         this.showDropDownNewTransaction();
         this.view.closeAddTransactionPopup();
 
-        _(".addTransaction") != null ? _(".addTransaction").addEventListener("click", this.storeNewTransactionData) : '';
         _(".editTansaction") != null ? _(".editTansaction").addEventListener("click", this.storeNewTransactionData) : '';
 
       }
@@ -385,6 +391,8 @@ class Control {
     document.querySelectorAll(".popupBox input[type='radio']").forEach((input) => {
       input.addEventListener('change', this.popUPincomeORexpense);
     });
+    _(".addTransaction") != null ? _(".addTransaction").addEventListener("click", this.storeNewTransactionData) : '';
+
   }
 
 
@@ -432,7 +440,9 @@ class Control {
 
   showEditPopup = () => {
     _(".editContainer").classList.add("fromLeftInfo");
-    (this.model.getUserInfo()).then(response => {
+    let uId = CryptoJS.AES.decrypt(localStorage.getItem("userID"), "Secret Passphrase").toString(CryptoJS.enc.Utf8);
+
+    (this.model.getUserInfo(uId)).then(response => {
       this.userDetails = response;
       _(".editContainer").addEventListener("click", this.eventsForUserEdit);
     })
@@ -685,13 +695,8 @@ class Control {
     else {
       editUser.user["display_picture"] = this.newImageURL;
     }
-    fetch(`http://127.0.0.1:8089/api/v1/users/${this.userDetails.user.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(editUser)
-    })
+    
+    this.model.editUserInfo(this.userDetails.user.id,editUser);
 
     this.isDPremoved = false;
 
@@ -707,5 +712,5 @@ class Control {
 
 }
 
-new Control().init();
+window.onload = new Control().init();
 

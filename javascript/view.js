@@ -270,7 +270,6 @@ class View {
   addNewTransaction = () => {
     let clonedTemplate = _(".addTransactionPopup").content.cloneNode(true);
     _("main").append(clonedTemplate);
-    this.setEventForNewTransDiv();
   }
 
   closeAddTransactionPopup = () => {
