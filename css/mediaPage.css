@@ -35,7 +35,7 @@
         width: 100%;
     }
     .secondDiv{
-        background-size: 55% !important;
+        background-size: 45% !important;
     } 
 }
 @media (max-width: 980px){
@@ -99,7 +99,7 @@
         display: none;
     }
     .secondDiv{
-        background-size: 55% !important;
+        background-size: 60% !important;
     } 
 }
 
@@ -116,7 +116,7 @@
         line-height: 20px;
     }
     .secondDiv{
-        background-size: 65% !important;
+        background-size: 73% !important;
     }
 }
 
@@ -125,7 +125,7 @@
         width: 80%;
     }
     .secondDiv{
-        background-size: 70% !important;
+        background-size: 75% !important;
     }
     .secondDiv h2,.noRecentTrans{
         font-size: 15px;
@@ -316,7 +316,7 @@
         font-size: 0.725rem;
     } 
     .secondDiv{
-        background-size: 90% !important;
+        background-size: 95% !important;
     }   
     .thirdDiv{
         min-height: 80px !important;
@@ -368,9 +368,7 @@
     .thirdDiv{
         min-height: 70px !important;
     }
-    .secondDiv{
-        background-size: 100% !important;
-    }
+
     .secondDiv h2,.noRecentTrans{
         font-size: 10px;
     }        

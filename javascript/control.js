@@ -3,7 +3,7 @@ class Control {
     this.model = new Model();
     this.view = new View();
     this.categoryArr = ["Salary", "Interests", "Business", "Extra Income", "Rent", "Food", "Bills", "Utilities", "Transportation", "Insurance", "Shopping", "Entertinment", "", "Health", "Housing", "Education", "Clothing", "Taxes", "Miscellaneous", "Personal Care", "Other"];
-    this.patmodeArr = ["Cash", "Debit Card", "Credit Card", "UPI"];
+    this.paymodeArr = ["Cash", "Debit Card", "Credit Card", "UPI"];
     this.incomeOrExpense = ["Income", "Expense"];
     this.editingIndex;
     this.totalClickedCheckbox = 0;
@@ -13,17 +13,15 @@ class Control {
     this.editImage;
     this.newImageURL = '';
     this.uName;
-    this.pass;
-    this.conPass;
+    this.pass='';
+    this.conPass='';
+    this.oldPin='';
   }
-
-
-
 
   init = () => {
     this.loadData();
     this.dashBoardData();
-    window.addEventListener('blur', this.model.logoutWhileInactive);   
+    window.addEventListener('blur', this.model.logoutWhileInactive);
     window.addEventListener('focus', this.model.checkCookie);
 
   }
@@ -39,26 +37,27 @@ class Control {
     this.model.addTransaction('Income', 'shopping for pongal ', '2022/04/24', 1000, 'Shopping', "Debit Card");
     this.model.addTransaction('Expense', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
     this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
-    this.model.addTransaction('Income', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
-    this.model.addTransaction('Income', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    this.model.addTransaction('Income', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
-    this.model.addTransaction('Expense', 'shopping for pongal ', '2022/04/24', 1000, 'Shopping', "Debit Card");
-    this.model.addTransaction('Income', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
-    this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
-    this.model.addTransaction('Expense', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
-    this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    this.model.addTransaction('Expense', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
-    this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    this.model.addTransaction('Income', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
-    this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
-    this.model.addTransaction('Expense', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
-    this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    this.model.addTransaction('Expense', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
-    this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Income', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Income', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Income', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
+    // this.model.addTransaction('Expense', 'shopping for pongal ', '2022/04/24', 1000, 'Shopping', "Debit Card");
+    // this.model.addTransaction('Income', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
+    // this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
+    // this.model.addTransaction('Expense', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Expense', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
+    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Income', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
+    // this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
+    // this.model.addTransaction('Expense', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
+    // this.model.addTransaction('Expense', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
+    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
 
   }
 
   dashBoardData = (e) => {
+    this.model.popState("DashBoard")
     this.view.showDefaultDashBoared(e);
     this.loadDashBoardData();
     this.setEventsForDashBoard();
@@ -85,16 +84,19 @@ class Control {
 
     if (isExpensehappened != undefined) {
       _(".secondDiv").style.backgroundColor = "#fff";
-      _(".secondDiv h2").remove();
       this.view.chart(this.model.expenseByCategory().keys, this.model.expenseByCategory().values);
     }
     else {
-      _(".secondDiv").style.background = `url("https://css.zohostatic.com/newwiki/v_410/images/blank-slate/zls-oops-blank-slate.png") center no-repeat`
+      _(".secondDiv").style.background = `#fff url("images/noDataFound.gif") center no-repeat`
     }
   }
 
+  showBalanceInTrans = ()=>{  
+    this.view.balanceOfTrans(this.model.transactionDetails());
+  }
 
   loadTransactionData = (e) => {
+    this.model.popState("Transaction");
     this.view.showTranscationDetails(e);
     this.displayAllTransaction();
     this.setEventsForTransaction();
@@ -138,9 +140,7 @@ class Control {
     document.querySelectorAll(".fa-eye").forEach((ecahEyeIcon) => {
       ecahEyeIcon.addEventListener("click", this.showPassword);
     });
-
     document.body.onresize = this.view.resizeEventforDashboard;
-
   }
 
   setEventsForTransaction = () => {
@@ -158,6 +158,10 @@ class Control {
 
     })
 
+    this.getCheckIndex();
+  }
+
+  getCheckIndex = () => {
     document.querySelectorAll(".checkBox").forEach((eachCheck) => {
       eachCheck.addEventListener("change", (e) => {
         this.getCheckboxStatus(e)
@@ -169,23 +173,27 @@ class Control {
 
     document.querySelector('.allTransDetails tbody').innerHTML = '';
     let inputText = document.querySelector('.search').value;
+    this.sendInputVal(inputText);
+  }
 
+  sendInputVal = (inputText) => {
     let arr = this.model.seachTransaction(inputText);
 
     _(".NoDataFoundErr") != null ? _(".NoDataFoundErr").remove() : '';
+    _(".pagination") != null ? _(".pagination").remove() : '';
 
     if (arr.length == 0) {
       _(".editDelterBtn") != null ? _(".editDelterBtn").remove() : '';
       let clonedTemplate = _(".noTranaction").content.cloneNode(true);
-      clonedTemplate.querySelector(".empty-state__message").innerText = "Hello";
+      clonedTemplate.querySelector(".empty-state__message").innerText = "No Records Found";
       _(".innerChild").append(clonedTemplate);
     }
     else {
       this.view.allTransaction(arr);
+      this.getCheckIndex();
       this.view.callPagination();
     }
   }
-
 
   setupAddDashBoardEvent = () => {
     document.querySelector(".dashboardLink").addEventListener('click', this.dashBoardData);
@@ -214,6 +222,12 @@ class Control {
 
   storeNewTransactionData = (e) => {
     let type;
+    let date = '';
+    let amount = '';
+    let category = _(".popupBox .categoryHead span").innerText;
+    let payMode = _(".popupBox .payMode span").innerText;
+    let desc = '';
+    let errorArr = [];
     if (_(".incomeRadio").checked) {
       let income = _(".incomeRadio").value
       if (this.incomeOrExpense.includes(income)) {
@@ -226,18 +240,42 @@ class Control {
         type = expense;
       }
     }
+    if (new Date(_(".transDate").value) < Date.now()) {
+      date = new Date(_(".transDate").value);
+    }
+    else {
+      errorArr.push("Invalid Date")
+    }
+    if (_(".popupBox .amount").value > 0 && _(".popupBox .amount").value < 1000000) {
+      amount = Number(_(".popupBox .amount").value)
+    }
+    else {
+      errorArr.push("Invalid (0<Amount>1000000)")
+    } 
+    if (!(this.categoryArr.includes(category))) {
+      errorArr.push("Select Category");
+    }
+    if (!(this.paymodeArr.includes(payMode))) {
+      errorArr.push("Select Pay Mode");
+    }
 
-    let date = new Date(_(".transDate").value) < Date.now() ? new Date(_(".transDate").value) : '';
-
-    let amount = (_(".popupBox .amount").value > 0 && _(".popupBox .amount").value < 1000000) ? Number(_(".popupBox .amount").value) : '';
-    let category = _(".popupBox .categoryHead span").innerText;
-    let payMode = _(".popupBox .payMode span").innerText;
-    let desc = _(".popupBox .description").value;
-
-
-    if (date != '' && amount != "" && desc != '' && this.categoryArr.includes(category) && this.patmodeArr.includes(payMode)) {
+    if (_(".popupBox .description").value == '') {
+      errorArr.push("Fill the Description");
+    }
+    else {
+      desc = _(".popupBox .description").value;
+    }
+    if (date != '' && amount != "" && desc != '' && this.paymodeArr.includes(payMode) && this.categoryArr.includes(category)) {
       if (e.target.classList.contains("addTransaction")) {
         this.model.addTransaction(type, desc, date, amount, category, payMode);
+        _(".successMsg").classList.add("showSuccessMsg")
+        setTimeout(function () {
+          _(".successMsg").setAttribute("style", "transition:.3s;top:-100%")
+          setTimeout(function () {
+            _(".successMsg").classList.remove("showSuccessMsg");
+            _(".successMsg").removeAttribute("style");
+          }, 100)
+        }, 1500)
       }
       if (e.target.classList.contains("editTansaction")) {
         this.totalClickedCheckbox = 0;
@@ -248,13 +286,26 @@ class Control {
         objToEdit.date = date;
         objToEdit.description = desc;
         objToEdit.amount = amount;
+        let opc = 0;
+        let time = setInterval(() => {
+          _(`.row${this.editingIndex}`).setAttribute("style", `background:rgba(254, 250, 221,${Math.abs(Math.sin(opc += .1))});`);
+        }, 13);
+        setTimeout(() => {
+          clearInterval(time)
+          _(`.row${this.editingIndex}`).removeAttribute("style");
+        }, 1500)
 
       }
+
+      this.model.lastMonthTrans();
+      this.showBalanceInTrans();
       this.displayAllTransaction();
       this.setEventsForTransaction();
       _(".popUpContainer").remove();
+      this.sendInputVal(_(".search").value);  
     }
     else {
+      _(".errMsgNewTrans").innerText = errorArr[0];
       _(".errMsgNewTrans").classList.add("showError");
       setTimeout(function () {
         _(".errMsgNewTrans").classList.remove("showError");
@@ -345,11 +396,8 @@ class Control {
   eventForEditBtn = () => {
     document.querySelectorAll(".eachCheck").forEach((eachCheckBox) => {
       if (eachCheckBox.checked) {
-        let tid = Number(eachCheckBox.getAttribute("index"));
-        this.editingIndex = this.model.transactions.findIndex(object => {
-          return object.tid === tid;
-        });
-
+        this.editingIndex = Number(eachCheckBox.getAttribute("index"));
+      
         let editTransVal = this.model.transactions[this.editingIndex];
 
         let clonedTemplate = _(".addTransactionPopup").content.cloneNode(true);
@@ -401,13 +449,13 @@ class Control {
       if (eachCheckBox.checked) {
         let tid = Number(eachCheckBox.getAttribute("index"));
 
-        const index = this.model.transactions.findIndex(object => {
-          return object.tid === tid;
-        });
-
         this.totalClickedCheckbox = 0;
 
-        this.model.transactions.splice(index, 1);
+        this.model.transactions.splice(tid, 1);
+
+        this.model.lastMonthTrans();
+        this.showBalanceInTrans();
+
         this.displayAllTransaction();
         this.setEventsForTransaction();
 
@@ -423,6 +471,7 @@ class Control {
     window.location.replace("login.html");
     document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     localStorage.removeItem("userID");
+    localStorage.removeItem("lastOUT");
   }
 
   showInfoFromLeft = () => {
@@ -550,6 +599,8 @@ class Control {
       _(".listOfOptions").classList.toggle("showListOfOptions");
     }
     else if (ele.contains("cancelBtn")) {
+      _(".inputInfos").reset();
+
       _(".listOfOptions").classList.remove("showListOfOptions");
       _(".editContainer").classList.remove("fromLeftInfo");
       this.userDetails.user.display_picture != '' ? _(".userInfo figure").style.backgroundImage = `url(${this.userDetails.user.display_picture})` : _(".userInfo figure").removeAttribute("style");
@@ -571,12 +622,8 @@ class Control {
 
   saveChangesOfEdit = () => {
     this.userName = _(".UserNameInput");
-    this.password = _(".UserpassInput");
-    this.confirmPassword = _(".reEnterPass");
     this.validateuserName(this.userName);
-    this.validatePassWord(this.password);
-    this.validateConfirmPassWord(this.confirmPassword, this.password);
-    this.validateAllEditedIput();
+    this.validatePassword();
   }
 
   validateuserName = (nameInput) => {
@@ -590,31 +637,80 @@ class Control {
     }
   }
 
-  validatePassWord = (passwordElement) => {
-    this.pass = undefined;
-    if (passwordElement.value == '' || passwordElement.value.match(/^[0-9]{6,6}$/g)) {
-      passwordElement.classList.remove("borderRed");
-      this.pass = passwordElement.value;
+  validatePassword = () => { 
+    let oldPinEle = _(".oldPin");
+    let newPin = _(".UserpassInput");
+    let confirmNewPin = _(".reEnterPass");
+
+    if (oldPinEle.value == '' || oldPinEle.value.match(/^[0-9]{6,6}$/g)) {
+      this.oldPin = oldPinEle.value;
+      oldPinEle.classList.remove("borderRed");
     }
     else {
-      passwordElement.classList.add("borderRed")
+      this.oldPin='err';
+      oldPinEle.classList.add("borderRed");
     }
-  }
 
-  validateConfirmPassWord = (confirmInput, passWordInput) => {
-    this.conPass = undefined;
-    if (confirmInput.value == '' || confirmInput.value.match(/^[0-9]{6,6}$/g)) {
-      if (confirmInput.value == passWordInput.value) {
-        confirmInput.classList.remove("borderRed");
-        this.conPass = confirmInput.value;
+    if (newPin.value == '' || newPin.value.match(/^[0-9]{6,6}$/g)) {
+      this.pass = newPin.value;
+      newPin.classList.remove("borderRed");
+    }
+    else {
+      this.pass='';
+      newPin.classList.add("borderRed");
+    }
+
+    if (confirmNewPin.value == '' || confirmNewPin.value.match(/^[0-9]{6,6}$/g)) {
+      if (confirmNewPin.value == newPin.value) {
+        confirmNewPin.classList.remove("borderRed");
+        this.conPass = confirmNewPin.value;
       }
       else {
-        confirmInput.classList.add("borderRed")
+        this.conPass='err';
+        confirmNewPin.classList.add("borderRed")
       }
     }
     else {
-      confirmInput.classList.add("borderRed")
+      this.conPass='err';
+      confirmNewPin.classList.add("borderRed");
     }
+    this.checkPassword();
+  }
+
+
+  checkPassword = ()=>{ 
+    
+   if(this.oldPin.length==6&&this.conPass.length==6){
+    (this.model.editPassWord({
+      "user" : {
+          "old_password" : this.oldPin,
+          "new_password" : this.conPass,
+          "email_id" : this.userDetails.user.email_id
+      }
+    })).then(data => {
+      if(data.status=="error"){
+        _(".invalidPass").classList.add("displayBlock");
+        setTimeout(()=>{
+          _(".invalidPass").classList.remove("displayBlock");
+        },1500)
+      }
+      else{
+        if(this.uName!=undefined){
+          _(".inputInfos").reset();
+          _(".editContainer").classList.remove("fromLeftInfo");
+          this.checkDPupdatedOrNot();
+        }
+      }
+    })
+      
+   }
+   else if(this.oldPin.length==0&&this.conPass.length==0){
+    if(this.uName!=undefined){
+      _(".inputInfos").reset();
+      _(".editContainer").classList.remove("fromLeftInfo");
+      this.checkDPupdatedOrNot();
+    }
+   }
   }
 
   updateNewImage = (e) => {
@@ -661,19 +757,19 @@ class Control {
           if (url != undefined) {
             this.newImageURL = url;
             _(".profileImg").style.backgroundImage = `url(${this.newImageURL})`;
-            this.sendEditedDEtails();
+            this.sendEditedDetails();
             this.isDPchanged = false;
           }
         })
       })
     }
     else {
-      this.sendEditedDEtails();
+      this.sendEditedDetails();
     }
   }
 
 
-  sendEditedDEtails = () => {
+  sendEditedDetails = () => {
     _(".userName").innerHTML = this.uName;
     _(".userNameMail h3").innerText = this.uName;
 
@@ -692,25 +788,14 @@ class Control {
       firebase.storage().refFromURL(this.userDetails.user.display_picture).delete();
       editUser.user["display_picture"] = '';
     }
-    else {
+    if(this.isDPchanged) {
       editUser.user["display_picture"] = this.newImageURL;
-    }
-    
-    this.model.editUserInfo(this.userDetails.user.id,editUser);
-
+    }   
+    this.model.editUserInfo(this.userDetails.user.id, editUser);
     this.isDPremoved = false;
-
   }
-
-  validateAllEditedIput = () => {
-    if (this.uName != undefined && this.pass != undefined && this.conPass != undefined) {
-      _(".inputInfos").reset();
-      _(".editContainer").classList.remove("fromLeftInfo");
-      this.checkDPupdatedOrNot();
-    }
-  }
-
 }
 
 window.onload = new Control().init();
+
 

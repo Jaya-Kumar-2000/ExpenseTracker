@@ -82,16 +82,13 @@ class loginModel {
 				_(".incorectpassWord").classList.add("showErr");
 			}
 			else{
+                document.cookie = "userLogin=True";
 				var encrypted = CryptoJS.AES.encrypt(`${data.user.id}`, "Secret Passphrase");
 				localStorage.setItem("userID", encrypted);
-				this.redirectToMain();
+                window.location.replace("index.html");
+                localStorage.setItem("lastOUT", new Date());
 			}
 		})
-    }
-
-    redirectToMain = () => {
-        window.location.replace("index.html");
-        document.cookie = "userLogin=True";
     }
 
     checkLoginInput = (e) => {

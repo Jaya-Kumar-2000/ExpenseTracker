@@ -1,13 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-html,body {
+
+html,
+body {
     height: 100%;
     width: 100%;
 }
+
 .userForm {
     background: #ecf0f3;
     font-family: 'Poppins', sans-serif;
@@ -17,6 +21,7 @@ html,body {
     justify-content: center;
     align-items: center;
 }
+
 .container {
     min-width: 300px;
     min-height: 350px;
@@ -38,6 +43,7 @@ html,body {
     background: url("../images/logo.png") center no-repeat;
     background-size: cover;
 }
+
 .title {
     font-size: 1.3rem;
     color: #1DA1F2;
@@ -46,18 +52,22 @@ html,body {
     margin-top: 5px;
     font-weight: normal;
 }
+
 .forms {
     width: 100%;
     display: flex;
 }
-.otpConfirmation input{
+
+.otpConfirmation input {
     border-radius: 4px;
 }
-.confirmBtns{
+
+.confirmBtns {
     display: flex;
     gap: 5px;
 }
-.confirmBtns button{
+
+.confirmBtns button {
     width: 50%;
     margin-top: 20px;
     border-radius: 4px;
@@ -66,11 +76,13 @@ html,body {
     color: white;
     font-size: 14px;
 }
-.resendotp{
-    background-color:#F9C00D;
+
+.resendotp {
+    background-color: #F9C00D;
     color: black !important;
 }
-.otpError{
+
+.otpError {
     width: 100%;
     display: block;
     text-align: left;
@@ -84,31 +96,37 @@ html,body {
     width: 100%;
     margin: 0 15px;
 }
-.loginRegForm > div{
+
+.loginRegForm>div {
     margin: 10px 0;
+    position: relative;
+
 }
-.passWordDiv{
+
+.passWordDiv {
     position: relative;
 }
 
-.eyeIcon{
+.eyeIcon {
     position: absolute;
     right: 0;
     top: 0;
     width: 40px;
     height: 40px;
 }
-.eyeIcon i{
+
+.eyeIcon i {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     font-size: 1.2rem;
     cursor: pointer;
     opacity: .6;
 }
 
-.incorectpassWord,.EmailExist{
+.incorectpassWord,
+.EmailExist {
     font-size: 13px;
     color: red;
     height: 20px;
@@ -116,18 +134,21 @@ html,body {
     display: none;
     opacity: .7;
 }
-.EmailExist{
+
+.EmailExist {
     width: 100%;
     text-align: left;
     padding-left: 5px;
     margin-top: 3px;
 }
-.incorectpassWord span{
+
+.incorectpassWord span {
     height: 100%;
     width: 100%;
     display: none;
 }
-.showErr{
+
+.showErr {
     display: block;
 }
 
@@ -142,18 +163,31 @@ button {
 input::placeholder {
     color: gray;
 }
+
 input {
     background: #ecf0f3;
     padding-left: 15px;
     height: 40px;
     font-size: 14px;
-    border-radius: 10px;
+    border-radius:5px;
     box-shadow: 0px 0px 6px #cbced1;
 }
+.redBorder{
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 5px;
+    z-index: 1;
+    background-color: #E53631;
+    border-radius: 5px 0 0 5px;
+}
+
 button {
-    margin:3px 0 10px 0;
+    margin: 3px 0 10px 0;
     background: #1DA1F2;
-    color: yellow;
+    color: #ffff00e2;
     height: 40px;
     border-radius: 10px;
     font-weight: 600;
@@ -161,6 +195,7 @@ button {
     transition: .2s;
     cursor: not-allowed;
 }
+
 .btnStyle {
     opacity: 1;
     cursor: pointer;
@@ -170,35 +205,39 @@ button {
 .loginBtn {
     text-decoration: none;
     margin: 20px;
-    color: #000;
+    color: rgb(0, 177, 0);
 }
 
 .registerBtn:hover,
 .loginBtn:hover {
-    color: rgb(0, 177, 0);
+    color:black ;
 }
 
 .border {
     box-shadow: 0 0 3px red;
 }
-.userNameDiv{
+
+.userNameDiv {
     display: flex;
     align-items: center;
-    margin: 10px 0 ;
+    margin: 10px 0;
 }
-.userNameDiv input{
+
+.userNameDiv input {
     margin: 0;
 }
-.userDP{
+
+.userDP {
     width: 18%;
     height: 40px;
-    margin-left: 8px;   
+    margin-left: 8px;
     position: relative;
     background-color: #e1e2e2;
     border-radius: 50%;
     cursor: pointer;
 }
-.userImageGet{
+
+.userImageGet {
     opacity: 0;
     position: absolute;
     top: 0;
@@ -209,17 +248,16 @@ button {
     cursor: pointer;
     border-radius: 50%;
 }
+
 input[type="file"]::-webkit-file-upload-button {
     cursor: pointer;
 }
-.userDP i{
+
+.userDP i {
     position: absolute;
     cursor: pointer;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     font-size: 1.4rem;
 }
-
-
-

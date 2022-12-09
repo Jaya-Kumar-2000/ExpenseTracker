@@ -2,12 +2,11 @@ let _ = function (ele) {
   return document.querySelector(ele);
 }
 class CreateObj {
-  constructor(type, description, date, amount, id, category, payMode) {
+  constructor(type, description, date, amount, category, payMode) {
     this.type = type;
     this.description = description;
     this.date = new Date(date);
     this.amount = amount;
-    this.tid = id;
     this.category = category;
     this.payMode = payMode;
   }
@@ -22,18 +21,20 @@ class Model {
   }
 
   addTransaction = (type, description, date, amount, category, payMode) => {
-    this.transactions.push(new CreateObj(type, description, date, amount, this.id++, category, payMode));
+    this.transactions.push(new CreateObj(type, description, date, amount, category, payMode));
     return this.transactions;
   }
 
   seachTransaction = (inputText) => { //search based on description
+    let userInput = inputText.toLowerCase();
+
     let filteredArray = this.transactions.filter(function (ele) {
-      console.log(ele)
-      return ele.description.includes(inputText)
+      return (ele.description.toLowerCase().includes(userInput) || ele.category.toLowerCase().includes(userInput))
     })
     return filteredArray;
   }
 
+  
   lastFiveTransactions = () => {
     let temp = this.transactions.slice();
     return temp.splice(-5);
@@ -154,7 +155,6 @@ class Model {
     localStorage.setItem("lastOUT", new Date());
   }
 
-
   checkCookie = (e) => {
     let isUserloggedIn = false;
 
@@ -175,26 +175,27 @@ class Model {
           diff /= (60 * 60);
           console.log(diff)
           if (diff >= 1) {
-            document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-            window.location.replace("login.html");
-            localStorage.removeItem("userID");
+            this.logoutUser();
           }
         }
         else {
-          document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-          window.location.replace("login.html");
-          localStorage.removeItem("userID");
+          this.logoutUser();
         }
       }
-      else {
-        window.location.replace("login.html");
-      }
+
     }
     else {
       window.location.replace("login.html");
     }
   }
 
+  logoutUser = ()=>{
+    document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    window.location.replace("login.html");
+    localStorage.removeItem("userID");
+    localStorage.removeItem("lastOUT");
+
+  }
 
   getUserInfo = (uID) => {
     return fetch(`http://127.0.0.1:8089/api/v1/users/${uID}`)
@@ -214,6 +215,29 @@ class Model {
       },
       body: JSON.stringify(editData)
     })
+  }
+
+  editPassWord = (obj)=>{
+    return fetch(`http://127.0.0.1:8089/api/v1/users/reset/password`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(obj)
+    })
+    .then(res => {
+      return res.json();
+    })
+    .then(data => {
+      return data;
+    });
+  }
+  
+
+  popState = (state)=>{
+    window.onpopstate = function () {
+      window.history.pushState("", "", `index.html#${state}`);	
+    };
   }
 }
 

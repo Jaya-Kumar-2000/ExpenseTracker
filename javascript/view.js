@@ -13,6 +13,9 @@ class View {
     document.querySelector('.amount').innerText = `₹ ${parseFloat(details.balance.toFixed(2))}`;
   }
 
+  balanceOfTrans = (details)=>{
+    document.querySelector('.amount').innerText = `₹ ${parseFloat(details.balance.toFixed(2))}`;
+  }
   lastFiveTransaction = (arr) => {
     if (arr.length != 0) {
 
@@ -69,8 +72,8 @@ class View {
   }
 
   allTransaction = (arr) => {
-
     let allTranactionDetails = `<div class="editDelterBtn">
+
     <div class="selectAllTransDiv">
       <input type="checkbox" id="selectAllTrans" class="checkBox selectAllTrans" name="selectAllTrans" value="selectAll" />
       <p class="totalSelectedTrans"></p>
@@ -82,6 +85,7 @@ class View {
   </div>
   <table class="allTransDetails" id="paginated-list" data-current-page="1" aria-live="polite">
     <tbody>
+
       <tr class="TransactionHead">
         <th class="checkStyle"><input type="checkbox" id="checkBox" class="checkBox allCheck" name="selectTransaction" value="selectAll" /></th>
         <th>Category</th>
@@ -97,9 +101,9 @@ class View {
     document.querySelector('.allTransactionDiv').innerHTML = allTranactionDetails;
 
     let docFrag = new DocumentFragment();
-    arr.forEach(element => {
+    arr.forEach((element,index) => {
       let divEle = document.createElement('tr');
-      divEle.setAttribute('class', 'TransactionBody');
+      divEle.setAttribute('class', `TransactionBody row${index}`);
 
       let checkBoxTableRow = document.createElement('td');
       checkBoxTableRow.setAttribute("class", "checkStyle")
@@ -108,8 +112,8 @@ class View {
       checkBox.setAttribute("type", "checkbox");
       checkBox.setAttribute("name", "selectTransaction");
       checkBox.setAttribute("id", "selectAll");
-      checkBox.setAttribute("class", "checkBox eachCheck");
-      checkBox.setAttribute("index", element.tid)
+      checkBox.setAttribute("class", `checkBox eachCheck`);
+      checkBox.setAttribute("index", index)
       checkBoxTableRow.appendChild(checkBox)
 
       let category = document.createElement('td');

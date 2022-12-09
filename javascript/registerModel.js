@@ -24,7 +24,6 @@ class regiterModel {
 
 	registerUser = (e) => {
 		e.preventDefault();
-
 		if (this.dp == undefined) {
 			this.dp = '';
 			this.sendOTPdiv();
@@ -41,7 +40,6 @@ class regiterModel {
 				})
 			})
 		}
-		this.dp = undefined;
 	}
 
 
@@ -70,10 +68,7 @@ class regiterModel {
 			From: "kumar2000kamaraj@gmail.com",
 			Subject: "OTP for account Creation: ",
 			Body: `Please use the verification code to create an account: ${this.otp}`
-		}).then(
-		message => console.log(message)
-		);
-
+		})
 	}	
 
 	addEVentsForOTPdiv = ()=>{
@@ -89,7 +84,7 @@ class regiterModel {
 		let otpDIVval = _(".otpInput").value;
 		if(otpDIVval!='' && otpDIVval.match(/^[0-9]{4,4}$/g)){
 			if(otpDIVval==this.otp){
-				console.log("correct")
+				this.sendNewUserData();
 			}
 			else{
 				_(".otpError").innerText = "Sorry, You have entered invalid OTP";
@@ -103,17 +98,8 @@ class regiterModel {
 
 	sendNewUserData = () => {
 
-		console.log({
-			"user": {
-				"name": this.userName,
-				"email_id": this.emailVar.toLowerCase(),
-				"password": this.reEnterPassword,
-				"display_picture": this.dp
-			}
-		})
 		fetch('http://127.0.0.1:8089/api/v1/users', {
 			method: 'POST',
-			// mode: 'no-cors',
 			headers: {
 				'Content-Type': 'application/json',
 				'Content-Type': 'application/json; charset=UTF-8',
@@ -129,19 +115,22 @@ class regiterModel {
 			})
 		})
 
-			.then(res => {
-				return res.json();
-			})
-			.then(data => {
-				if (data.status == "error") {
-					this.emailAlreadyExsit();
-				}
-				else {
-					var encrypted = CryptoJS.AES.encrypt(`${data.user.id}`, "Secret Passphrase");
-					localStorage.setItem("userID", encrypted);
-					this.loginForm.redirectToMain()
-				}
-			})
+		.then(res => {
+			return res.json();
+		})
+		.then(data => {
+			if (data.status == "error") {
+				this.emailAlreadyExsit();
+			}
+			else {
+				var encrypted = CryptoJS.AES.encrypt(`${data.user.id}`, "Secret Passphrase");
+				localStorage.setItem("userID", encrypted);
+				localStorage.setItem("lastOUT", new Date());
+				document.cookie = "userLogin=True";
+				window.location.replace("index.html");
+				this.dp=undefined;
+			}
+		})
 		_(".regForm").reset();
 	}
 
@@ -157,6 +146,12 @@ class regiterModel {
 		if (e.target.classList.contains("userImageGet")) {
 			e.preventDefault();
 			this.dp = e.target.files[0];
+			if(this.dp != undefined){
+				_(".userDP").style.background="#86DEAE";
+			}
+			else{
+				_(".userDP").style.background="#e1e2e2";
+			}
 		}
 		else if (e.target.classList.contains("registerUserName")) {
 			this.userName = undefined;

@@ -208,12 +208,19 @@ li.removeBtn {
 }
 
 .userInfoEdit {
-	height: 60px;
 	width: 95%;
+    margin: 5px 0;
 }
 
 .userInfoEdit label {
 	font-size: 14px;
+}
+.invalidPass{
+	padding-top: 1px;
+	letter-spacing: 1px;
+	font-size: 12px;
+	color: #f34141;
+	display: none;
 }
 
 .userInfoEdit input {
@@ -414,14 +421,15 @@ li.removeBtn {
 }
 
 .logoutBtn {
-	outline: none;
-	border: none;
-	background-color: #fff;
-	margin: 50px 0 0;
-	font-size: 1.1rem;
-	letter-spacing: 1px;
-	cursor: pointer;
-	transition: .3s;
+    outline: none;
+    border: none;
+    background-color: #fff;
+    margin: 50px auto 0;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: .3s;
+    display: inline-block;
 }
 
 .logoutBtn:hover {
@@ -559,7 +567,7 @@ article .firstDiv {
 	padding: 10px;
 	border-radius: 5px;
 	height: 490px  !important;
-	background-size: 35% !important;
+	background-size: 38% !important;
 	position: relative;
 }
 
@@ -569,16 +577,6 @@ article .firstDiv {
 	margin: auto;
 }
 
-.secondDiv h2{
-	font-size: 16px;
-	position: absolute;
-	left: 50%;
-	width: 100%;
-	bottom: 30px;
-	transform: translate(-50%);
-	letter-spacing: 1px;
-	text-align: center;
-}
 .secondDiv h1,
 .thirdDiv>h1 {
 	font-weight: 300;
@@ -618,6 +616,7 @@ table {
 	width: 100%;
 	border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
+
 .checkStyle{
 	display: flex;
 	justify-content: center;
@@ -684,7 +683,9 @@ th {
 	outline: none;
 	font-size: 1.2rem;
 }
-
+.search::placeholder{
+	font-size: 16px;
+}
 .SearchBox .addTransBtn {
 	height: 33px;
 	cursor: pointer;
@@ -757,6 +758,48 @@ th {
 	background: #fff;
 	position: relative;
 }
+.successMsg{
+	padding:8px 8px 8px 15px;
+	position: absolute;
+	top: -100%;
+	left: 50%;
+	transform: translate(-50%); 
+	background-color: #A8F1C6;
+	border-radius: 3px;
+	letter-spacing: 1px;
+	word-spacing: 1px;
+	transition: .2s;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+}
+.successMsg::before {
+    content: '';
+    display: inline-block;
+	position: absolute;
+	background-color: #208443;
+	left: 0;
+	top: 0;
+	border-radius: 3px 0 0 3px;
+    width: 5px;
+    height: 100%;
+}
+.successMsg b{
+	background-color: #208443;
+	margin-left: 10px;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	padding: 2px;
+}
+.successMsg b i{
+	font-size: 23px;
+    color: #A8F1C6;
+}	
+.showSuccessMsg{
+	top: 8px;
+}
+
 .editDelterBtn >div{
 	height: 100%;
 	display: flex;
@@ -780,8 +823,8 @@ th {
 }
 .selectAllTrans{
 	/* accent-color: #81B7CA !important; */
-    height: 21px !important;
-    width: 21px !important;
+    height: 18px !important;
+    width: 18px !important;
 }
 
 .editDelterBtn button {
