@@ -2,58 +2,109 @@ class Control {
   constructor() {
     this.model = new Model();
     this.view = new View();
-    this.categoryArr = ["Salary", "Interests", "Business", "Extra Income", "Rent", "Food", "Bills", "Utilities", "Transportation", "Insurance", "Shopping", "Entertinment", "", "Health", "Housing", "Education", "Clothing", "Taxes", "Miscellaneous", "Personal Care", "Other"];
-    this.paymodeArr = ["Cash", "Debit Card", "Credit Card", "UPI"];
-    this.incomeOrExpense = ["Income", "Expense"];
+    this.incomeArr = ["salary", "interests", "business", "extraIncome"]
+    this.expenseArr = ["rent", "food", "bills", "utilities", "transportation", "insurance", "shopping", "entertainment", "healthCare", "housing", "education", "clothing", "taxes", "miscellaneous", "personalCare"];
+    this.paymodeArr = ["cash", "debitCard", "creditCard", "UPI"];
+    this.incomeOrExpense = ["income", "expense"];
+    this.editingTrans;
     this.editingIndex;
     this.totalClickedCheckbox = 0;
+    this.filterDrop = 0;
     this.userDetails;
     this.isDPchanged = false;
     this.isDPremoved = false;
     this.editImage;
     this.newImageURL = '';
     this.uName;
-    this.pass='';
-    this.conPass='';
-    this.oldPin='';
+    this.pass = '';
+    this.conPass = '';
+    this.oldPin = '';
+    this.type = "";
+
   }
 
   init = () => {
-    this.loadData();
-    this.dashBoardData();
-    window.addEventListener('blur', this.model.logoutWhileInactive);
-    window.addEventListener('focus', this.model.checkCookie);
+    if (navigator.onLine) {
+      this.model.checkCookie();
+      this.loadData();
+      let clonedTemplate = _(".overAllDiv").content.cloneNode(true);
+      _("main").append(clonedTemplate);
+      window.addEventListener('blur', this.model.logoutWhileInactive);
+      window.addEventListener('focus', this.model.checkCookie);
+      window.addEventListener('focus', this.checkInterNetOnFocus);
+    }
+    else {
+      let clonedTemplate = _(".noNetWorkDiv").content.cloneNode(true);
+      _("body").prepend(clonedTemplate);
+      _(".checkInternet").addEventListener("click", this.checkNetworkBTN)
+    }
 
   }
 
-  loadData = () => {
-    this.model.checkCookie();
+  checkNetworkBTN = () => {
+    _(".popUpwifiLoader").classList.add("displayFlex");
+    setTimeout(() => {
+      _(".popUpwifiLoader").classList.remove("displayFlex");
+      if (navigator.onLine) {
+        _(".networkPopup").remove();
+        this.init();
+      }
+    }, 500)
+  }
 
+  checkInterNetOnFocus = () => {
+    if (!navigator.onLine) {
+      _(".mainContainer article") != null ? _(".mainContainer article").remove() : '';
+      _(".logoutBtn").removeEventListener("click", this.model.logoutUser);
+      _(".dashboardLink").removeEventListener('click', this.dashBoardData);
+      _(".transcationLink").removeEventListener('click', this.loadTransactionData);
+
+      if (_(".networkPopup") == null) {
+        _(".showEditPopUP").removeEventListener("click", this.showEditPopup);
+        _(".editContainer").removeEventListener("click", this.eventsForUserEdit);
+        let clonedTemplate = _(".noNetWorkDiv").content.cloneNode(true);
+        _("body").prepend(clonedTemplate);
+        _(".checkInternet").addEventListener("click", this.againCheck);
+      }
+    }
+
+  }
+
+  againCheck = () => {
+    _(".popUpwifiLoader").classList.add("displayFlex");
+    setTimeout(() => {
+      _(".popUpwifiLoader").classList.remove("displayFlex");
+      if (navigator.onLine) {
+        _(".networkPopup").remove();
+        _(".showEditPopUP").addEventListener("click", this.showEditPopup);
+        _(".editContainer").addEventListener("click", this.eventsForUserEdit);
+        var current = document.getElementsByClassName("active");
+        current[0].className = current[0].className.replace("active", "");
+
+        if (this.type == "") {
+          _(".dashboardLink").classList.add("active");
+          this.dashBoardData();
+        }
+        else {
+          _(".transcationLink").classList.add("active");
+          this.loadTransactionData();
+        }
+      }
+    }, 500)
+  }
+
+  loadData = () => {
     let uId = CryptoJS.AES.decrypt(localStorage.getItem("userID"), "Secret Passphrase").toString(CryptoJS.enc.Utf8);
     (this.model.getUserInfo(uId)).then(response => {
+      this.userDetails = response;
       this.view.setUserInfo(response.user);
+      // this.model.getDahBoardData(this.userDetails.user.id);
+      this.model.getTransactionData(this.userDetails.user.id).then(res=>{
+        if(res=="success"){
+          this.dashBoardData();
+        }
+      });
     })
-    this.model.addTransaction('Income', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
-    this.model.addTransaction('Income', 'shopping for pongal ', '2022/04/24', 1000, 'Shopping', "Debit Card");
-    this.model.addTransaction('Expense', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
-    this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
-    // this.model.addTransaction('Income', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
-    // this.model.addTransaction('Income', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    // this.model.addTransaction('Income', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
-    // this.model.addTransaction('Expense', 'shopping for pongal ', '2022/04/24', 1000, 'Shopping', "Debit Card");
-    // this.model.addTransaction('Income', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
-    // this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
-    // this.model.addTransaction('Expense', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
-    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    // this.model.addTransaction('Expense', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
-    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    // this.model.addTransaction('Income', 'really from salary', '2022/03/28', 2000, 'Salary', "Debit Card");
-    // this.model.addTransaction('Income', 'salary from office', '2022/03/22', 7000, 'Salary', "Debit Card");
-    // this.model.addTransaction('Expense', 'education for children', '2022/03/23', 2500, 'Education', "Debit Card");
-    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-    // this.model.addTransaction('Expense', 'medicine for health ', '2022/04/4', 100, 'Health', "Debit Card");
-    // this.model.addTransaction('Expense', 'education for children', '2022/03/24', 2500, 'Education', "Debit Card");
-
   }
 
   dashBoardData = (e) => {
@@ -68,7 +119,6 @@ class Control {
     this.displayTransactionDetails();
     this.displayLastFiveTransaction();
     this.displayChart();
-    this.setupAddTranasactionEvent();
   }
 
   displayTransactionDetails = () => {
@@ -80,40 +130,40 @@ class Control {
   }
 
   displayChart = () => {
-    let isExpensehappened = this.model.lastMonthData.find(eachArr => eachArr.type === 'Expense');
+    let isExpensehappened = this.model.lastMonthData.find(eachArr => eachArr.type.name === 'expense');
 
     if (isExpensehappened != undefined) {
-      _(".secondDiv").style.backgroundColor = "#fff";
+      _(".secondDiv").style.background = "#fff";
       this.view.chart(this.model.expenseByCategory().keys, this.model.expenseByCategory().values);
     }
     else {
-      _(".secondDiv").style.background = `#fff url("images/noDataFound.gif") center no-repeat`
+      _(".secondDiv").style.background = `#fff url("images/no-data-found.gif") center no-repeat`
     }
   }
 
-  showBalanceInTrans = ()=>{  
+  showBalanceInTrans = () => {
     this.view.balanceOfTrans(this.model.transactionDetails());
   }
 
   loadTransactionData = (e) => {
+    this.type = "Transaction";
     this.model.popState("Transaction");
     this.view.showTranscationDetails(e);
     this.displayAllTransaction();
     this.setEventsForTransaction();
-    document.querySelector('.search').addEventListener('input', this.displaySearch);
     this.setupAddDashBoardEvent();
     this.eventForFilterBox();
   }
 
-  setupAddTranasactionEvent = () => {
-    document.querySelector(".transcationLink").addEventListener('click', this.loadTransactionData);
-  }
+
 
 
   displayAllTransaction = () => {
+
     document.querySelector(".allTransactionDiv").innerHTML = '';
 
-    let arr = this.model.allTransactionDetails();
+    let arr = this.model.allTransactions;
+
     _(".NoDataFoundErr") != null ? _(".NoDataFoundErr").remove() : '';
 
     if (arr.length == 0) {
@@ -121,6 +171,7 @@ class Control {
       _(".innerChild").append(clonedTemplate);
     }
     else {
+      document.querySelector('.search').addEventListener('input', this.displaySearch);
       this.view.allTransaction(arr);
       this.view.callPagination();
 
@@ -132,15 +183,18 @@ class Control {
       aTag.addEventListener("click", this.view.changeButtonbackground)
     });
 
-    _(".logoutBtn").addEventListener("click", this.logoutBtn);
-    _(".showInfo").addEventListener("click", this.showInfoFromLeft);
-    _(".dialog").addEventListener("click", this.hideInfoFromLeft);
+    _(".logoutBtn").addEventListener("click", this.model.logoutUser);
+    _(".showInfo").addEventListener("click", this.view.showInfoFromLeft);
+    _(".dialog").addEventListener("click", this.view.hideInfoFromLeft);
     _(".showEditPopUP").addEventListener("click", this.showEditPopup);
 
     document.querySelectorAll(".fa-eye").forEach((ecahEyeIcon) => {
       ecahEyeIcon.addEventListener("click", this.showPassword);
     });
     document.body.onresize = this.view.resizeEventforDashboard;
+    _(".navbar-header .fa-sliders ").classList.remove("displayBlock");
+    document.querySelector(".transcationLink").addEventListener('click', this.loadTransactionData);
+
   }
 
   setEventsForTransaction = () => {
@@ -151,27 +205,163 @@ class Control {
 
     document.body.onresize = this.view.resizeEventforTransaction;
     _(".filterBox .DropDownHead").addEventListener("click", (e) => {
+      e.stopPropagation()
       _(".filterBox .DropDownBody").classList.toggle("showDropDown");
       _(".filterBox .DropDownHead i").classList.toggle("rotateDownBtn");
       _(".filterBox .DropDownHead").classList.toggle("listBorder");
       _(".filterBox .DropDownBody").addEventListener("click", this.selectFilterDropDownValue);
-
     })
-
     this.getCheckIndex();
   }
 
-  getCheckIndex = () => {
-    document.querySelectorAll(".checkBox").forEach((eachCheck) => {
-      eachCheck.addEventListener("change", (e) => {
-        this.getCheckboxStatus(e)
+  selectTransactions = (e) => {
+    e.stopPropagation()
+    _(".deleteBtn").disabled = false;
+    _(".deleteBtn").classList.add("editBtnHide");
+    _(".editBtn").disabled = false;
+    _(".editBtn").classList.add("editBtnHide");
+
+
+    let arr = ["TD", "SPAN"]
+    let clicedEle = e.target;
+
+
+    if(_(".fa-square-check")==null){
+      this.totalClickedCheckbox = 0;
+    }
+    
+    if (clicedEle.classList.contains("selectAllTrans")) {
+      this.totalClickedCheckbox = 0;
+
+      _(".allCheck").classList.remove("fa-square-check")
+
+      if (clicedEle.classList.contains("fa-square-check")) {
+        clicedEle.classList.remove("fa-square-check")
+        document.querySelectorAll("tbody tr").forEach((eachRow) => {
+          eachRow.classList.remove("backgroundAdd");
+          eachRow.querySelector(".eachCheck").classList.remove("fa-square-check");
+          this.totalClickedCheckbox = 0;
+        })
+      }
+      else {
+        clicedEle.classList.add("fa-square-check")
+        document.querySelectorAll("tbody tr").forEach((eachRow) => {
+          eachRow.classList.add("backgroundAdd");
+          eachRow.querySelector(".eachCheck").classList.add("fa-square-check");
+          this.totalClickedCheckbox += 1;
+        })
+      }
+    }
+
+    else if (clicedEle.classList.contains("allCheck")) {
+      _(".selectAllTrans").classList.remove("fa-square-check");
+      document.querySelectorAll(".TransactionBody .fa-square-check").forEach(eachCheck => {
+        eachCheck.classList.remove("fa-square-check")
+        eachCheck.parentNode.parentNode.classList.remove("backgroundAdd");
       })
-    })
+
+      if (clicedEle.classList.contains("fa-square-check")) {
+        clicedEle.classList.remove("fa-square-check")
+
+        document.querySelectorAll(".listItem").forEach((eachList) => {
+          eachList.classList.remove("backgroundAdd")
+          eachList.querySelector("i").classList.remove("fa-square-check")
+          this.totalClickedCheckbox -= 1;
+        });
+      }
+      else {
+        clicedEle.classList.add("fa-square-check")
+
+        this.totalClickedCheckbox = 0;
+        document.querySelectorAll(".listItem").forEach((eachList) => {
+          eachList.classList.add("backgroundAdd");
+          eachList.querySelector("i").classList.add("fa-square-check")
+          this.totalClickedCheckbox += 1;
+        });
+      }
+    }
+
+
+    else if (clicedEle.tagName == "TD") {
+      _(".allCheck").classList.remove("fa-square-check")
+      let clickedCheckBox = e.target.parentNode.querySelector("i");
+      if(clickedCheckBox.classList.contains("fa-square-check")) {
+        clickedCheckBox.classList.remove("fa-square-check")
+        e.target.parentNode.classList.remove("backgroundAdd");
+        this.totalClickedCheckbox -= 1;
+      }
+      else {
+        clickedCheckBox.classList.add("fa-square-check")
+        e.target.parentNode.classList.add("backgroundAdd");
+        this.totalClickedCheckbox += 1;
+      }
+    }
+
+    else if (clicedEle.tagName == "I"||clicedEle.tagName == "B") {
+      let clickedCheckBox = clicedEle.parentNode.parentNode.querySelector("i")
+      _(".allCheck").classList.remove("fa-square-check")
+
+      if (clickedCheckBox.classList.contains("fa-square-check")) {
+        clickedCheckBox.classList.remove("fa-square-check")
+        clickedCheckBox.parentNode.parentNode.classList.remove("backgroundAdd");
+        this.totalClickedCheckbox -= 1;
+      }
+      else {
+        clickedCheckBox.classList.add("fa-square-check")
+        clickedCheckBox.parentNode.parentNode.classList.add("backgroundAdd");
+        this.totalClickedCheckbox += 1;
+      }
+    }
+
+    else if (clicedEle.tagName == "TR") {
+      _(".allCheck").classList.remove("fa-square-check")
+      let clickedCheckBox = e.target.querySelector("i");
+      if (clickedCheckBox.classList.contains("fa-square-check")) {
+        clickedCheckBox.classList.remove("fa-square-check")
+        e.target.classList.remove("backgroundAdd");
+        this.totalClickedCheckbox -= 1;
+      }
+      else {
+        clickedCheckBox.classList.add("fa-square-check")
+        e.target.classList.add("backgroundAdd");
+        this.totalClickedCheckbox += 1;
+      }
+    }
+
+    if (this.totalClickedCheckbox == 0) {
+      _(".selectAllTrans").classList.remove("fa-square-check");
+      _(".allCheck").classList.remove("fa-square-check");
+      _(".editBtn").disabled = true;
+      _(".editBtn").classList.remove("editBtnHide");
+      _(".deleteBtn").disabled = true;
+      _(".deleteBtn").classList.remove("editBtnHide");
+    }
+    if (this.totalClickedCheckbox == 1) {
+      _(".editBtn").disabled = false;
+      _(".editBtn").classList.add("editBtnHide");
+      _(".editBtn").addEventListener("click", this.eventForEditBtn);
+      _(".deleteBtn").addEventListener("click", this.eventForDeleteBtn);
+    }
+    if (this.totalClickedCheckbox > 1) {
+      _(".editBtn").disabled = true;
+      _(".editBtn").classList.remove("editBtnHide");
+      _(".deleteBtn").addEventListener("click", this.eventForDeleteBtn);
+    }
+
+    _(".totalSelectedTrans").innerHTML = `${this.totalClickedCheckbox}/<b>${this.model.allTransactions.length}</b>`;
+
+
+  }
+
+  getCheckIndex = () => {
+    _(".allTransDetails tbody").addEventListener("mousedown", this.selectTransactions);
+    _(".selectAllTrans").addEventListener("mousedown", this.selectTransactions);
+    _(".allCheck").addEventListener("mousedown", this.selectTransactions);
   }
 
   displaySearch = () => {
-
-    document.querySelector('.allTransDetails tbody').innerHTML = '';
+    this.totalClickedCheckbox = 0;
+    document.querySelector('.allTransDetails').innerHTML = '';
     let inputText = document.querySelector('.search').value;
     this.sendInputVal(inputText);
   }
@@ -200,44 +390,53 @@ class Control {
   }
 
   eventForFilterBox = () => {
-    _(".submitFilter").addEventListener("click", this.model.getFilterValue);
+    _(".filterBox").addEventListener("click", () => {
+      _(".filterBox .DropDownBody").classList.remove("showDropDown");
+      _(".filterBox .DropDownHead i").classList.remove("rotateDownBtn");
+      _(".filterBox .DropDownHead").classList.remove("listBorder");
+    })
+    _(".submitFilter").addEventListener("click", this.getFilterValue);
+    _(".resetFilterForm").addEventListener("click", () => {
+      _(".filterCatHead span").innerText = `Select Category`;
+      this.filterDrop = 0;
+      if (_(".fa-square-check") != null) {
+        document.querySelectorAll(".fa-square-check").forEach((eachCheck) => {
+          eachCheck.classList.remove("fa-square-check")
+        })
+      }
+    })
   }
-
-
-
-  showFilterError = (startingDate, endingDate) => {
-    _(".filterError").classList.add("showFilterErr");
-    setTimeout(function () {
-      _(".filterError").classList.remove("showFilterErr");
-    }, 2000)
-  }
-
 
   eventForNewTransaction = () => {
+
     this.view.addNewTransaction();
     this.setEventForNewTransDiv();
     this.showDropDownNewTransaction();
     this.view.closeAddTransactionPopup();
+
+    let listofincome = _("#incomeDropDown").content.cloneNode(true);
+    _(".popUpContainer .dropDown").prepend(listofincome);
   }
 
   storeNewTransactionData = (e) => {
-    let type;
+
+    let typeOfTrans;
     let date = '';
     let amount = '';
-    let category = _(".popupBox .categoryHead span").innerText;
-    let payMode = _(".popupBox .payMode span").innerText;
+    let category = _(".popupBox .categoryHead span").classList[0];
+    let payMode = _(".popupBox .payMode span").classList[0];
     let desc = '';
     let errorArr = [];
     if (_(".incomeRadio").checked) {
       let income = _(".incomeRadio").value
       if (this.incomeOrExpense.includes(income)) {
-        type = income;
+        typeOfTrans = income;
       }
     }
     else {
       let expense = _(".expenseRadio").value
       if (this.incomeOrExpense.includes(expense)) {
-        type = expense;
+        typeOfTrans = expense;
       }
     }
     if (new Date(_(".transDate").value) < Date.now()) {
@@ -251,12 +450,26 @@ class Control {
     }
     else {
       errorArr.push("Invalid (0<Amount>1000000)")
-    } 
-    if (!(this.categoryArr.includes(category))) {
-      errorArr.push("Select Category");
     }
+
+    if (typeOfTrans == "income") {
+      if (!(this.incomeArr.includes(category))) {
+        errorArr.push("Select Category");
+        category = '';
+
+      }
+    }
+    else {
+      if (!(this.expenseArr.includes(category))) {
+        errorArr.push("Select Category");
+        category = '';
+      }
+    }
+
+
     if (!(this.paymodeArr.includes(payMode))) {
       errorArr.push("Select Pay Mode");
+      payMode = "";
     }
 
     if (_(".popupBox .description").value == '') {
@@ -265,226 +478,183 @@ class Control {
     else {
       desc = _(".popupBox .description").value;
     }
-    if (date != '' && amount != "" && desc != '' && this.paymodeArr.includes(payMode) && this.categoryArr.includes(category)) {
-      if (e.target.classList.contains("addTransaction")) {
-        this.model.addTransaction(type, desc, date, amount, category, payMode);
-        _(".successMsg").classList.add("showSuccessMsg")
-        setTimeout(function () {
-          _(".successMsg").setAttribute("style", "transition:.3s;top:-100%")
-          setTimeout(function () {
-            _(".successMsg").classList.remove("showSuccessMsg");
-            _(".successMsg").removeAttribute("style");
-          }, 100)
-        }, 1500)
+
+    let obj = {
+      "account": {
+        "date": date,
+        "type": {
+          "name": typeOfTrans
+        },
+        "amount": amount,
+        "category": {
+          "name": category
+        },
+        "pay_type": {
+          "name": payMode
+        },
+        "description": desc
       }
-      if (e.target.classList.contains("editTansaction")) {
+    }
+
+    if (date != '' && amount != "" && desc != '' && payMode != '' && category != '') {
+      if (e.target.classList.contains("addTransaction")) {
+
+        this.model.sendNewTransData(obj, this.userDetails.user.id)
+          .then(res => {
+            if (res.status == "success") {
+              // this.model.getDahBoardData(userId);
+              this.model.getTransactionData(this.userDetails.user.id)
+                .then(response => {
+                  this.view.showSuccessMsg(typeOfTrans);
+                  this.getDetails();
+                });
+            }
+          });
+      }
+
+      else if (e.target.classList.contains("editTansaction")) {
         this.totalClickedCheckbox = 0;
-        let objToEdit = this.model.transactions[this.editingIndex];
-        objToEdit.type = type;
-        objToEdit.category = category;
-        objToEdit.payMode = payMode;
-        objToEdit.date = date;
-        objToEdit.description = desc;
-        objToEdit.amount = amount;
+
+        let objToEdit = this.model.allTransactions[this.editingIndex];
+        this.model.updateTrans(this.userDetails.user.id, objToEdit.id, obj)
+          .then(res => {
+            if (res.status == "success") {
+              // this.model.getDahBoardData(userId);
+              this.model.getTransactionData(this.userDetails.user.id)
+                .then(response => {
+                  this.getDetails();
+                });
+            }
+          });
+
         let opc = 0;
         let time = setInterval(() => {
-          _(`.row${this.editingIndex}`).setAttribute("style", `background:rgba(254, 250, 221,${Math.abs(Math.sin(opc += .1))});`);
+          _(`.row${this.editingTrans}`).setAttribute("style", `background:rgba(254, 250, 221,${Math.abs(Math.sin(opc += .1))});`);
         }, 13);
         setTimeout(() => {
           clearInterval(time)
-          _(`.row${this.editingIndex}`).removeAttribute("style");
+          _(`.row${this.editingTrans}`).removeAttribute("style");
         }, 1500)
-
       }
 
-      this.model.lastMonthTrans();
-      this.showBalanceInTrans();
-      this.displayAllTransaction();
-      this.setEventsForTransaction();
       _(".popUpContainer").remove();
-      this.sendInputVal(_(".search").value);  
+
     }
     else {
       _(".errMsgNewTrans").innerText = errorArr[0];
       _(".errMsgNewTrans").classList.add("showError");
       setTimeout(function () {
-        _(".errMsgNewTrans").classList.remove("showError");
+        _(".errMsgNewTrans") != null ? _(".errMsgNewTrans").classList.remove("showError") : '';
       }, 1500)
     }
   }
 
-  getCheckboxStatus = (e) => {
-    let ele = e.target;
 
-    _(".deleteBtn").disabled = false;
-    _(".deleteBtn").classList.add("editBtnHide");
-    _(".editBtn").disabled = false;
-    _(".editBtn").classList.add("editBtnHide");
-
-    if (ele.classList.contains("selectAllTrans")) {
-      if (ele.checked) {
-        this.totalClickedCheckbox = 0;
-        document.querySelectorAll(".checkBox").forEach((eachList) => {
-          eachList.checked = true;
-          if (eachList.classList.contains("eachCheck")) {
-            eachList.parentNode.parentNode.classList.add("backgroundAdd");
-            this.totalClickedCheckbox += 1;
-          }
-        });
-      }
-      else {
-        document.querySelectorAll(".checkBox").forEach((eachList) => {
-          eachList.checked = false;
-          if (eachList.classList.contains("eachCheck")) {
-            eachList.parentNode.parentNode.classList.remove("backgroundAdd");
-            this.totalClickedCheckbox = 0;
-          }
-        });
-      }
-    }
-    else if (ele.classList.contains("allCheck")) {
-      if (ele.checked) {
-        this.totalClickedCheckbox = 0;
-        document.querySelectorAll(".listItem").forEach((eachList) => {
-          eachList.classList.add("backgroundAdd")
-          eachList.querySelector(".checkBox").checked = true;
-          this.totalClickedCheckbox += 1;
-        });
-      }
-      else {
-        document.querySelectorAll(".listItem").forEach((eachList) => {
-          eachList.classList.remove("backgroundAdd")
-          eachList.querySelector(".checkBox").checked = false;
-          this.totalClickedCheckbox -= 1;
-        });
-      }
-    }
-    else {
-      if (ele.checked) {
-        this.totalClickedCheckbox += 1;
-        ele.parentNode.parentNode.classList.add("backgroundAdd");
-      }
-      else {
-        ele.parentNode.parentNode.classList.remove("backgroundAdd");
-        _(".allCheck").checked = false;
-        this.totalClickedCheckbox -= 1;
-      }
-    }
-    if (this.totalClickedCheckbox == 0) {
-      _(".selectAllTrans").checked = false;
-      _(".editBtn").disabled = true;
-      _(".editBtn").classList.remove("editBtnHide");
-      _(".deleteBtn").disabled = true;
-      _(".deleteBtn").classList.remove("editBtnHide");
-    }
-    if (this.totalClickedCheckbox == 1) {
-      _(".editBtn").disabled = false;
-      _(".editBtn").classList.add("editBtnHide");
-      _(".editBtn").addEventListener("click", this.eventForEditBtn);
-      _(".deleteBtn").addEventListener("click", this.eventForDeleteBtn);
-    }
-    if (this.totalClickedCheckbox > 1) {
-      _(".editBtn").disabled = true;
-      _(".editBtn").classList.remove("editBtnHide");
-      _(".deleteBtn").addEventListener("click", this.eventForDeleteBtn);
-    }
-
-    _(".totalSelectedTrans").innerHTML = `${this.totalClickedCheckbox}/<b>${this.model.allTransactionDetails().length}</b>`;
+  getDetails = () => {
+    this.model.lastMonthTrans();
+    this.showBalanceInTrans();
+    this.displayAllTransaction();
+    this.setEventsForTransaction();
+    this.sendInputVal(_(".search").value);
   }
-
 
   eventForEditBtn = () => {
-    document.querySelectorAll(".eachCheck").forEach((eachCheckBox) => {
-      if (eachCheckBox.checked) {
-        this.editingIndex = Number(eachCheckBox.getAttribute("index"));
-      
-        let editTransVal = this.model.transactions[this.editingIndex];
+    this.view.addNewTransaction();
 
-        let clonedTemplate = _(".addTransactionPopup").content.cloneNode(true);
-        clonedTemplate.querySelector("h1").innerHTML = `Edit Transaction<i class="fa-solid fa-xmark closeBtn"></i>`;
-        clonedTemplate.querySelector(".button2").classList.remove("addTransaction");
-        clonedTemplate.querySelector(".button2").classList.add("editTansaction");
-        clonedTemplate.querySelector(".button2").innerText = "Save";
-        if (editTransVal.type == "Income") {
-          clonedTemplate.querySelector(".incomeRadio").checked = "true";
-        }
-        else {
-          clonedTemplate.querySelector(".expenseRadio").checked = "true";
-        }
+    this.editingTrans = Number((_(".TransactionBody .fa-square-check").id));
 
-        var today = new Date(editTransVal.date);
-        clonedTemplate.querySelector(".transDate").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);;
-        clonedTemplate.querySelector(".amount").value = editTransVal.amount;
-        clonedTemplate.querySelector(".newCatHead span").innerText = editTransVal.category;
-        clonedTemplate.querySelector(".paymentMethod").innerText = editTransVal.payMode;
-        clonedTemplate.querySelector(".description").value = editTransVal.description;
 
-        _("main").append(clonedTemplate);
+    let arr = this.model.allTransactions;
 
-        this.setEventForNewTransDiv();
-        this.showDropDownNewTransaction();
-        this.view.closeAddTransactionPopup();
+    this.editingIndex = arr.findIndex(object => object.id === this.editingTrans);
 
-        _(".editTansaction") != null ? _(".editTansaction").addEventListener("click", this.storeNewTransactionData) : '';
+    let editTransVal = arr[this.editingIndex];
 
-      }
-    })
+    _(".popUpContainer h1").innerHTML = `Edit Transaction<i class="fa-solid fa-xmark closeBtn"></i>`;
+    _(".popUpContainer .button2").classList.remove("addTransaction");
+    _(".popUpContainer .button2").classList.add("editTansaction");
+    _(".popUpContainer .button2").innerText = "Save";
+
+    if (editTransVal.type.name == "income") {
+
+      this.setListForEdit("incomeDropDown", "incomeRadio")
+    }
+    else {
+      this.setListForEdit("ExpenseDropDown", "expenseRadio")
+
+      _(".popUpContainer .expenseRadio").checked = "true";
+    }
+
+    var today = new Date(editTransVal.date);
+
+
+    _(".popUpContainer .transDate").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);;
+    _(".popUpContainer .amount").value = editTransVal.amount;
+    _(".popUpContainer .newCatHead span").classList.add(editTransVal.category.name);
+    _(".popUpContainer .newCatHead span").innerText = editTransVal.category.display_name;
+    _(".popUpContainer .paymodeOpt span").classList.add(editTransVal.pay_type.name);
+    _(".popUpContainer .paymodeOpt span").innerText = editTransVal.pay_type.display_name;
+    _(".popUpContainer .description").value = editTransVal.description;
+
+    this.setEventForNewTransDiv();
+    this.showDropDownNewTransaction();
+    this.view.closeAddTransactionPopup();
   }
 
-  setEventForNewTransDiv = () => {
-
-    let listofincome = _("#incomeDropDown").content.cloneNode(true);
+  setListForEdit = (typeOfEdit, ratio) => {
+    let listofincome = _(`#${typeOfEdit}`).content.cloneNode(true);
     _(".popUpContainer .dropDown").prepend(listofincome);
 
+    _(`.popUpContainer .${ratio}`).checked = "true";
+  }
+  setEventForNewTransDiv = () => {
     document.querySelectorAll(".popupBox input[type='radio']").forEach((input) => {
-      input.addEventListener('change', this.popUPincomeORexpense);
+      input.addEventListener('change', this.view.popUPincomeORexpense);
     });
     _(".addTransaction") != null ? _(".addTransaction").addEventListener("click", this.storeNewTransactionData) : '';
-
+    _(".editTansaction") != null ? _(".editTansaction").addEventListener("click", this.storeNewTransactionData) : '';
   }
-
 
   eventForDeleteBtn = () => {
-    document.querySelectorAll(".eachCheck").forEach((eachCheckBox) => {
-      if (eachCheckBox.checked) {
-        let tid = Number(eachCheckBox.getAttribute("index"));
-
-        this.totalClickedCheckbox = 0;
-
-        this.model.transactions.splice(tid, 1);
-
-        this.model.lastMonthTrans();
-        this.showBalanceInTrans();
-
-        this.displayAllTransaction();
-        this.setEventsForTransaction();
-
-        if (this.model.transactions.length == 0) {
-          document.querySelector('.search').removeEventListener('input', this.displaySearch);
-        }
-
+    let clonedTemplate = _(".confirmDeletePopUP").content.cloneNode(true);
+    _("main").append(clonedTemplate);
+    _(".deletePopUP").addEventListener("mousedown", (e) => {
+      if (e.target.classList.contains("yesBtn")) {
+        this.deleteTranasction()
       }
+      else if (e.target.classList.contains("closeBtn")) {
+        _(".deletePopUP").remove()
+      }
+    })
+
+  }
+
+  deleteTranasction = () => {
+    document.querySelectorAll(".TransactionBody .fa-square-check").forEach((eachCheckBox) => {
+      
+      let tid = Number(eachCheckBox.id);
+      
+      let index = this.model.allTransactions.findIndex(x => x.id === tid);
+      let UID = this.userDetails.user.id;
+      this.model.deleteTransaction(UID, tid)
     });
-  }
 
-  logoutBtn = () => {
-    window.location.replace("login.html");
-    document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    localStorage.removeItem("userID");
-    localStorage.removeItem("lastOUT");
-  }
-
-  showInfoFromLeft = () => {
-    _(".info").classList.add("fromLeftInfo");
-    _(".dialog").classList.add("dialogPopup");
-  }
-
-  hideInfoFromLeft = () => {
-    _(".info").classList.remove("fromLeftInfo");
-    _(".editContainer").classList.remove("fromLeftInfo");
-    _(".listOfOptions").classList.remove("showListOfOptions");
-    _(".dialog").classList.remove("dialogPopup")
-    _(".filterBox").classList.remove("fromRightFilter");
+    setTimeout(() => {
+      _(".deletePopUP").remove();
+      this.totalClickedCheckbox = 0;
+      this.model.lastMonthTrans();
+      this.showBalanceInTrans();
+      this.displayAllTransaction();
+      this.setEventsForTransaction();
+      if (this.model.allTransactions.length == 0) {
+        _('.search').removeEventListener('input', this.displaySearch);
+      }
+      else {
+        if (_(".search").value != '') {
+          this.displaySearch()
+        }
+      }
+    }, 600)
   }
 
   showEditPopup = () => {
@@ -505,93 +675,89 @@ class Control {
       classList.remove("fa-eye");
     }
     else {
-      (e.target.parentNode.previousElementSibling).type = "password";
+      showDropDownNewTransaction
+        (e.target.parentNode.previousElementSibling).type = "password";
       classList.add("fa-eye");
     }
   }
 
   showDropDownNewTransaction = () => {
-    _(".newCatHead").addEventListener("click", () => {
+    _(".newCatHead").addEventListener("click", (e) => {
+      e.stopPropagation();
       this.selectCategoryValue();
       this.view.categoryType();
     });
-
-    _(".payMode").addEventListener("click", () => {
+    _(".payMode").addEventListener("click", (e) => {
+      e.stopPropagation();
       this.selectPayModeValue();
-      this.view.payMoodeType();
+      this.view.payModeType();
     });
+
+    _(".popupBox").addEventListener("click", () => {
+      try {
+        _(".paymodeList").classList.remove("showDropDown");
+        _(".payMode i").classList.remove("rotateDownBtn");
+        _(".payMode").classList.remove("listBorder");
+        _(".newCatList").classList.remove("showDropDown");
+        _(".newCatHead i").classList.remove("rotateDownBtn");
+        _(".newCatHead").classList.remove("listBorder");
+      } catch (error) { }
+    })
+
   }
 
 
   selectCategoryValue = () => {
     _(".CategoryAndPaymode .categoryList").addEventListener("click", (e) => {
-      this.selectClickedValue(e, _(".CategoryAndPaymode .categoryList"));
+      e.stopPropagation();
+      this.view.selectClickedValue(e, _(".CategoryAndPaymode .categoryList"));
     });
   }
 
   selectPayModeValue = () => {
     _(".CategoryAndPaymode .paymodeList").addEventListener("click", (e) => {
-      this.selectClickedValue(e, _(".CategoryAndPaymode .paymodeList"));
+      e.stopPropagation();
+      this.view.selectClickedValue(e, _(".CategoryAndPaymode .paymodeList"));
     });
-  }
-
-
-
-  selectClickedValue = (e, ele) => {
-    let tagName = e.target.tagName;
-    let val;
-    if (tagName == "H4") {
-      val = e.target.querySelector("span").innerText;
-    }
-    else {
-      val = e.target.parentNode.querySelector("span").innerText;
-    }
-    ele.nextElementSibling.innerHTML = `<span>${val}</span> <i class="fa-solid fa-caret-down"></i>`
-    ele.classList.remove("showDropDown");
-    ele.nextElementSibling.classList.remove("listBorder")
   }
 
 
   selectFilterDropDownValue = (e) => {
     e.stopPropagation()
-    let arr = ["B", "SPAN"]
+    let arr = ["B", "SPAN", "I"]
     let clickedEle = e.target.tagName;
 
     if (arr.includes(clickedEle)) {
-      let clickedCheckBox = e.target.parentNode.querySelector("input")
-      if (clickedCheckBox.checked == true) {
-        clickedCheckBox.checked = false;
+      let clickedCheckBox = e.target.parentNode.querySelector("i")
+      if (clickedCheckBox.classList.contains("fa-square-check")) {
+        clickedCheckBox.classList.remove("fa-square-check")
+        this.filterDrop -= 1;
       }
       else {
-        clickedCheckBox.checked = true
+        clickedCheckBox.classList.add("fa-square-check")
+        this.filterDrop += 1;
       }
     }
     else if (e.target.tagName == "H4") {
-      let clickedCheckBox = e.target.querySelector("input");
-      if (clickedCheckBox.checked == true) {
-        clickedCheckBox.checked = false;
+      let clickedCheckBox = e.target.querySelector("i");
+      if (clickedCheckBox.classList.contains("fa-square-check")) {
+        clickedCheckBox.classList.remove("fa-square-check")
+        this.filterDrop -= 1;
       }
       else {
-        clickedCheckBox.checked = true
+        clickedCheckBox.classList.add("fa-square-check")
+        this.filterDrop += 1;
       }
     }
-  }
+    if (this.filterDrop == 0) {
+      _(".filterCatHead span").innerText = `Select Category`;
 
-  popUPincomeORexpense = (e) => {
-    let listofincome;
-    _(".newCatHead").innerHTML = `<span>Select Category</span><i class="fa-solid fa-caret-down newCat"></i>`;
-
-    _(".popUpContainer .DropDownBody").remove();
-    _(".popUpContainer .categoryHead i").classList.remove("rotateDownBtn");
-    _(".popUpContainer .categoryHead").classList.remove("listBorder");
-    if (e.target.id == "expense") {
-      listofincome = _("#ExpenseDropDown").content.cloneNode(true);
     }
     else {
-      listofincome = _("#incomeDropDown").content.cloneNode(true);
+      _(".filterCatHead span").innerText = `${this.filterDrop} selected`;
     }
-    _(".popUpContainer .dropDown").prepend(listofincome);
   }
+
 
   eventsForUserEdit = (e) => {
     let ele = e.target.classList;
@@ -600,6 +766,8 @@ class Control {
     }
     else if (ele.contains("cancelBtn")) {
       _(".inputInfos").reset();
+
+      _(".UserID").value = this.userDetails.user.id;
 
       _(".listOfOptions").classList.remove("showListOfOptions");
       _(".editContainer").classList.remove("fromLeftInfo");
@@ -637,7 +805,7 @@ class Control {
     }
   }
 
-  validatePassword = () => { 
+  validatePassword = () => {
     let oldPinEle = _(".oldPin");
     let newPin = _(".UserpassInput");
     let confirmNewPin = _(".reEnterPass");
@@ -647,7 +815,7 @@ class Control {
       oldPinEle.classList.remove("borderRed");
     }
     else {
-      this.oldPin='err';
+      this.oldPin = 'err';
       oldPinEle.classList.add("borderRed");
     }
 
@@ -656,7 +824,7 @@ class Control {
       newPin.classList.remove("borderRed");
     }
     else {
-      this.pass='';
+      this.pass = '';
       newPin.classList.add("borderRed");
     }
 
@@ -666,51 +834,61 @@ class Control {
         this.conPass = confirmNewPin.value;
       }
       else {
-        this.conPass='err';
+        this.conPass = 'err';
         confirmNewPin.classList.add("borderRed")
       }
     }
     else {
-      this.conPass='err';
+      this.conPass = 'err';
       confirmNewPin.classList.add("borderRed");
     }
     this.checkPassword();
   }
 
 
-  checkPassword = ()=>{ 
-    
-   if(this.oldPin.length==6&&this.conPass.length==6){
-    (this.model.editPassWord({
-      "user" : {
-          "old_password" : this.oldPin,
-          "new_password" : this.conPass,
-          "email_id" : this.userDetails.user.email_id
+  checkPassword = () => {
+
+    if (this.oldPin.length == 6 && this.conPass.length == 6) {
+      if (this.oldPin != this.conPass) {
+        (this.model.editPassWord({
+          "user": {
+            "old_password": this.oldPin,
+            "new_password": this.conPass,
+            "email_id": this.userDetails.user.email_id
+          }
+        })).then(data => {
+          if (data.status == "error") {
+            _(".Oldpass").classList.add("displayBlock");
+            setTimeout(() => {
+              _(".Oldpass").classList.remove("displayBlock");
+            }, 1500)
+          }
+          else {
+            if (this.uName != undefined) {
+              _(".inputInfos").reset();
+              _(".editContainer").classList.remove("fromLeftInfo");
+              this.checkDPupdatedOrNot();
+            }
+          }
+        })
       }
-    })).then(data => {
-      if(data.status=="error"){
-        _(".invalidPass").classList.add("displayBlock");
-        setTimeout(()=>{
-          _(".invalidPass").classList.remove("displayBlock");
-        },1500)
+      else {
+        _(".samePass").classList.add("displayBlock");
+        setTimeout(() => {
+          _(".samePass").classList.remove("displayBlock");
+        }, 1500)
       }
-      else{
-        if(this.uName!=undefined){
-          _(".inputInfos").reset();
-          _(".editContainer").classList.remove("fromLeftInfo");
-          this.checkDPupdatedOrNot();
-        }
-      }
-    })
-      
-   }
-   else if(this.oldPin.length==0&&this.conPass.length==0){
-    if(this.uName!=undefined){
-      _(".inputInfos").reset();
-      _(".editContainer").classList.remove("fromLeftInfo");
-      this.checkDPupdatedOrNot();
     }
-   }
+    else if (this.oldPin.length == 0 && this.conPass.length == 0) {
+      if (this.uName != undefined) {
+        _(".inputInfos").reset();
+        _(".editContainer").classList.remove("fromLeftInfo");
+        this.checkDPupdatedOrNot();
+      }
+    }
+    else if (this.oldPin == 0) {
+      _(".oldPin").classList.add("borderRed");
+    }
   }
 
   updateNewImage = (e) => {
@@ -771,6 +949,7 @@ class Control {
 
   sendEditedDetails = () => {
     _(".userName").innerHTML = this.uName;
+    _(".UserID").value = this.userDetails.user.id;
     _(".userNameMail h3").innerText = this.uName;
 
     if (this.uName == '') {
@@ -788,14 +967,138 @@ class Control {
       firebase.storage().refFromURL(this.userDetails.user.display_picture).delete();
       editUser.user["display_picture"] = '';
     }
-    if(this.isDPchanged) {
+    if (this.isDPchanged) {
       editUser.user["display_picture"] = this.newImageURL;
-    }   
+    }
     this.model.editUserInfo(this.userDetails.user.id, editUser);
     this.isDPremoved = false;
   }
+
+  getFilterValue = () => {
+    let startingDate = _(".startingDate").value
+    let endingDate = _(".endingDate").value;
+    let cashFolwArr = [];
+    let payModeArr = [];
+    let filterCategoryArr = [];
+    let minValue = _(".minValue").value;
+    let maxValue = _(".maxValue").value;
+    let filterObj = {}
+    let err = ''
+
+    if (startingDate != '' && endingDate != '') {
+      if (new Date(startingDate) > new Date(endingDate) || new Date(startingDate) > new Date() || new Date(endingDate) > new Date()) {
+        startingDate = '';
+        endingDate = '';
+        _(".dateError").innerText = "Please provide a valid Date";
+        this.view.showFilterError("dateError");
+        err = "Invalid Date";
+      }
+      else {
+        filterObj['startDate'] = startingDate;
+        filterObj['endDate'] = endingDate
+      }
+    }
+    else if (startingDate != '' && endingDate == '' || startingDate == '' && endingDate != '') {
+      startingDate = '';
+      endingDate = '';
+      err = "Invalid Date";
+      _(".dateError").innerText = "Date field should not be empty";
+      this.view.showFilterError("dateError");
+    }
+
+    let cashFolwCheck = document.querySelectorAll('.cashFlowCheck');
+    let cashFlowLength = cashFolwCheck.length;
+    for (var i = 0; i < cashFlowLength; i++) {
+      if (cashFolwCheck[i].checked) {
+        let caskflowVal = cashFolwCheck[i].value;
+        if (this.incomeOrExpense.includes(caskflowVal)) {
+          cashFolwArr.push(caskflowVal);
+        }
+        else {
+          err = "invalid Cash Flow"
+        }
+      }
+    }
+    if (cashFolwArr.length > 0) {
+      filterObj['cashFlow'] = cashFolwArr;
+    }
+
+    let payModeCheck = document.querySelectorAll('.payModeCheck');
+    let payCheckLength = payModeCheck.length;
+    for (var i = 0; i < payCheckLength; i++) {
+      if (payModeCheck[i].checked) {
+        let paymodeValue = payModeCheck[i].value;
+        if (this.paymodeArr.includes(paymodeValue)) {
+          payModeArr.push(paymodeValue);
+        }
+        else {
+          err = "invalid paymode"
+        }
+      }
+    }
+
+    if (payModeArr.length > 0) {
+      filterObj['payMode'] = payModeArr;
+    }
+
+    let selectCat = document.querySelectorAll('.filterCheck');
+    let selectLength = selectCat.length;
+    for (var i = 0; i < selectLength; i++) {
+      if (selectCat[i].classList.contains("fa-square-check")) {
+        let selectedCategories = selectCat[i].id;
+        if (this.expenseArr.includes(selectedCategories) || this.incomeArr.includes(selectedCategories)) {
+          filterCategoryArr.push(selectedCategories);
+        }
+        else {
+          err = "invalid category"
+        }
+      }
+    }
+    if (filterCategoryArr.length > 0) {
+      filterObj['categories'] = filterCategoryArr;
+    }
+
+    if (minValue != '' && maxValue != '') {
+      minValue = Number(minValue);
+      maxValue = Number(maxValue);
+      if ((minValue < 0 && maxValue < 0) || (minValue > maxValue)) {
+        minValue = '';
+        maxValue = '';
+        err = "invalid amount"
+        this.view.errorOfAmount("Please provide valid amount");
+      }
+      else {
+        filterObj['minAmount'] = minValue;
+        filterObj['maxAmount'] = maxValue;
+      }
+    }
+    else if (minValue != '' && maxValue == '' || minValue == '' && maxValue != '') {
+      minValue = '';
+      maxValue = '';
+      err = "invalid amount"
+      this.view.errorOfAmount("Amount fieled shouldn't be empty");
+    }
+
+    if (err == '') {
+      if (Object.keys(filterObj).length > 0) {
+        console.log(filterObj)
+      }
+    }
+
+    // if (startingDate != '' || endingDate != '' || cashFolwArr.length != 0 || payModeArr.length != 0 || filterCategoryArr.length != 0 || (minValue != '' && maxValue != '' )) {
+    //   console.log(filterObj);
+    // }
+  }
+
+
+
+
+
+
 }
 
 window.onload = new Control().init();
+
+
 
 

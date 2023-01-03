@@ -1,6 +1,170 @@
+@media (min-width: 980px){
+    .contentLanding h1{
+        min-width: 205px;
+    }
+}    
+@media (max-width: 980px){
+    .landingContainer{
+        width:80%;
+        min-width:700px;
+        padding: 0 40px;
+    }
+    .contentLanding{
+        padding-top:20px;
+    }
+    .contentLanding h1{
+        width: 68%;
+        font-size: 2.1rem;
+        line-height: 50px;
+    }
+    .contentLanding p{
+        width: 85%;
+        line-height: 23px
+    }
+}
+
+@media (max-width: 786px){
+    .landingContainer{
+        width:90%;
+        height: 60%;
+        min-width:600px;
+        padding: 0 30px;
+    }
+    
+    .header{
+        padding: 20px 0 0;
+    }
+    .landingLogo{
+        font-size: 1.5rem;
+    }
+    .landingLogo span{
+        height: 45px;
+        width: 45px;
+    }
+    .optionsEntry li{
+        padding: 5px 20px;
+        font-size: 12px;
+    }
+
+    .landingContent > div{
+        height: var(--hundredPercent);
+    }
+    .contentLanding{
+        padding-top: 10px;
+    }
+    .contentLanding h1{
+        font-size: 2rem;
+        line-height: 45px;
+    }
+    .contentLanding p{
+        font-size: 13px;
+        line-height: 21px;
+    }
+    .buttonLanding{
+        font-size: 14px;
+        padding: 8px 0;
+    }
+}   
+
+
+@media (max-width: 650px){
+    .landingContainer{
+        height: var(--hundredPercent);
+        width: var(--hundredPercent);
+        min-width: 450px;
+        border-radius:0;
+        padding: 0 15px
+    }
+    .imageBigLogo{
+        float: var(--none);
+        background-size: 80%;
+    }
+    .landingContent{
+        display: var(--displayFlex);
+        flex-direction: var(--column);
+        justify-content: var(--spaceEvenly);
+    }
+    .landingContent > div{
+        width: var(--hundredPercent);
+        height: 53%;
+    }
+    .contentLanding{
+        height: 38% !important;
+    }
+    .contentLanding h1{
+        width: 55%;
+        margin: var(--auto);
+        min-width: 330px;
+    }
+    .contentLanding p{
+        width: 55%;
+        min-width: 330px;
+        margin: var(--auto);
+    }
+    .startBtnContainer{
+        margin: var(--auto);
+    }
+    hr{
+       width: 95%;
+       min-width: 330px;
+    }
+}   
+@media (max-width: 580px){ 
+    .imageBigLogo{
+        background-size: var(--hundredPercent);
+    }
+    
+}    
+
+@media (max-width: 480px){
+    .landingContainer{
+        min-width: 360px;
+    }   
+    .header{
+        padding: 10px 0 0;
+    }
+    .landingLogo{
+        font-size: 1.1rem;
+        letter-spacing: 0;
+    }
+    .landingLogo span{
+        height: 35px;
+        width: 35px;
+        margin-right: 5px;
+    }
+    .optionsEntry li{
+        padding: 5px 0;
+        width: 60px;
+        font-size: 10px;
+        text-align: var(--center);
+    }
+    .optionsEntry li:nth-child(2){
+        margin-left: 3px;
+    }
+    .contentLanding h1{
+        width: 70%;
+        min-width: 280px;
+        font-size: 1.5rem;
+        line-height: 40px;
+    }
+    hr{
+        width: 70%;
+        min-width: 260px;
+     }
+     .contentLanding p{
+        width: 70%;
+        min-width: 280px;
+        line-height: 20px;
+     }
+     .imageBigLogo {
+        background-size: 110%;
+    }
+
+}    
+
 @media (max-width: 360px){
     .container{
-        min-width: 240px
+        min-width: 270px;
     }
     .logo{
         height: 45px;
@@ -14,7 +178,6 @@
     }
     input{
         height: 35px;
-
     }
     .userDP{
         width: 35px;
@@ -25,5 +188,80 @@
     }
     .userDP i{
         font-size: 1.2rem;
+    }
+    .networkPopup figure{
+		width: 100px;
+        height: 60px;
+	}
+	.networkPopup h1{
+		margin: 10px 0;
+		font-size: 2rem;
+	}
+	.networkPopup p{
+        font-size: .9rem;
+        line-height: 19px;
+	}
+	.networkPopup button{
+		margin: 20px;
+        width: 200px;
+        border-radius: 5px;
+        width: 150px;
+        height: 35px;
+        font-size: 1rem;
+	}
+    .landingContent{
+        height: 85%;
+    }
+    .landingContainer{
+        min-width: 270px;
+        padding: 0 5px;
+    }   
+    .header{
+        padding: 8px 5px 0;
+    }
+    .landingLogo{
+        font-size: .9rem;
+    }
+    
+    .landingContent > div{
+        height: 45% !important;
+    }
+
+    .landingLogo span{
+        height: 30px;
+        width: 30px;
+        margin-right: 3px;
+    }
+    .optionsEntry li{
+        padding: 4px 0;
+        width: 50px;
+        font-size: 8px;
+    }
+    .contentLanding h1{
+        width: 70%;
+        min-width: 240px;
+        font-size: 1.3rem;
+        line-height: 35px;
+    }
+    hr{
+        min-width: 230px;
+     }
+     .contentLanding p{
+        width: 70%;
+        min-width: 240px;
+        line-height: 20px;
+     }
+     .imageBigLogo {
+        background-size: 110%;
+    }
+}
+
+
+@media (max-width:280px){
+    .landingLogo{
+        font-size: .8rem;
+    }
+    .landingContent{
+        height: 75%;
     }
 }

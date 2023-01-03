@@ -1,8 +1,10 @@
+
 class View {
   constructor() {
     this.listItems;
     this.currentPage = 1;
-    this.pageCount = 0;
+    this.pageCount = 1;
+    this.lengthOfTranasaction = 0;
   }
 
   transactionDetails = (details) => {
@@ -13,9 +15,10 @@ class View {
     document.querySelector('.amount').innerText = `₹ ${parseFloat(details.balance.toFixed(2))}`;
   }
 
-  balanceOfTrans = (details)=>{
+  balanceOfTrans = (details) => {
     document.querySelector('.amount').innerText = `₹ ${parseFloat(details.balance.toFixed(2))}`;
   }
+
   lastFiveTransaction = (arr) => {
     if (arr.length != 0) {
 
@@ -31,19 +34,19 @@ class View {
 
       let docFrag = new DocumentFragment();
       arr.forEach(element => {
-
         let divEle = document.createElement('tr');
         divEle.setAttribute('class', 'TransactionBody');
 
         let date = document.createElement('td');
-        date.textContent = element.date.toLocaleDateString();
+        date.textContent = new Date(element.date).toLocaleDateString();
+
 
         let category = document.createElement('td');
-        category.textContent = element.category;
-
+        category.setAttribute("class","catImg")
+        category.innerHTML = `<b class="category-icon ${element.category.name}"></b> ${element.category.display_name}`;
 
         let payMode = document.createElement('td');
-        payMode.textContent = element.payMode;
+        payMode.textContent = element.pay_type.display_name;
 
         let description = document.createElement('td');
         description.textContent = element.description;
@@ -51,7 +54,7 @@ class View {
         let amount = document.createElement('td');
         amount.setAttribute("class", "amountRightAllign");
         amount.textContent = `₹ ${element.amount}`;
-        element.type === 'Income' ? amount.style.color = 'green' : amount.style.color = 'red';
+        element.type.name === 'income' ? amount.style.color = 'green' : amount.style.color = 'red';
 
         divEle.appendChild(date);
         divEle.appendChild(category);
@@ -71,11 +74,16 @@ class View {
 
   }
 
+
   allTransaction = (arr) => {
+
+    this.lengthOfTranasaction = arr.length;
+
     let allTranactionDetails = `<div class="editDelterBtn">
 
-    <div class="selectAllTransDiv">
-      <input type="checkbox" id="selectAllTrans" class="checkBox selectAllTrans" name="selectAllTrans" value="selectAll" />
+    <div class="selectAllTransDiv"> 
+    <i class="fa-regular fa-square selectAllTrans"></i>
+
       <p class="totalSelectedTrans"></p>
     </div>  
     <div>
@@ -84,16 +92,18 @@ class View {
     </div>  
   </div>
   <table class="allTransDetails" id="paginated-list" data-current-page="1" aria-live="polite">
-    <tbody>
+    <thead>
 
       <tr class="TransactionHead">
-        <th class="checkStyle"><input type="checkbox" id="checkBox" class="checkBox allCheck" name="selectTransaction" value="selectAll" /></th>
+        <th class="checkStyle"><i class="fa-regular fa-square allCheck"></i></th>
         <th>Category</th>
         <th>Date</th>
         <th>Payment Mode</th>
         <th>Description</th>
         <th class="amountRightAllign">Amount</th>
       </tr>
+    </thead>
+    <tbody>
     </tbody>
   </table>
 `;
@@ -101,29 +111,28 @@ class View {
     document.querySelector('.allTransactionDiv').innerHTML = allTranactionDetails;
 
     let docFrag = new DocumentFragment();
-    arr.forEach((element,index) => {
+
+    arr.forEach((element) => {
       let divEle = document.createElement('tr');
-      divEle.setAttribute('class', `TransactionBody row${index}`);
+      divEle.setAttribute('class', `TransactionBody row${element.id}`);
 
       let checkBoxTableRow = document.createElement('td');
       checkBoxTableRow.setAttribute("class", "checkStyle")
 
-      let checkBox = document.createElement("input");
-      checkBox.setAttribute("type", "checkbox");
-      checkBox.setAttribute("name", "selectTransaction");
-      checkBox.setAttribute("id", "selectAll");
-      checkBox.setAttribute("class", `checkBox eachCheck`);
-      checkBox.setAttribute("index", index)
+      let checkBox = document.createElement("i");
+      checkBox.setAttribute("class", `fa-regular fa-square eachCheck`);
+      checkBox.setAttribute("id", element.id)
       checkBoxTableRow.appendChild(checkBox)
 
       let category = document.createElement('td');
-      category.textContent = element.category;
+      category.setAttribute("class","catImg")
+      category.innerHTML = `<b class="category-icon ${element.category.name}"></b> ${element.category.display_name}`;
 
       let date = document.createElement('td');
-      date.textContent = element.date.toLocaleDateString();
+      date.textContent = new Date(element.date).toLocaleDateString();
 
       let payMode = document.createElement('td');
-      payMode.textContent = element.payMode;
+      payMode.textContent = element.pay_type.display_name;
 
 
       let description = document.createElement('td');
@@ -132,7 +141,7 @@ class View {
       let amount = document.createElement('td');
       amount.setAttribute("class", "amountRightAllign");
       amount.textContent = `₹ ${element.amount}`;
-      element.type === 'Income' ? amount.style.color = 'green' : amount.style.color = 'red';
+      element.type.name === 'income' ? amount.style.color = 'green' : amount.style.color = 'red';
 
       divEle.appendChild(checkBoxTableRow);
       divEle.appendChild(category);
@@ -140,11 +149,12 @@ class View {
       divEle.appendChild(payMode);
       divEle.appendChild(description);
       divEle.appendChild(amount);
+      
       docFrag.prepend(divEle);
 
     });
-    document.querySelector('.allTransDetails tbody').appendChild(docFrag);
 
+    document.querySelector('.allTransDetails tbody').appendChild(docFrag);
 
     document.querySelector('.allTransactionDiv').innerHTML += ` <div class="pagination">
       <button class="pagination-button" id="prev-button" aria-label="Previous page" title="Previous page">
@@ -159,7 +169,8 @@ class View {
     <i class="fa-solid fa-forward"></i>
     </button></div>`;
 
-    _(".totalSelectedTrans").innerHTML = `0/<b>${arr.length}</b>`
+    _(".totalSelectedTrans").innerHTML = `0/<b>${this.lengthOfTranasaction}</b>`;
+
   }
 
   chart = (label, datas) => {
@@ -168,7 +179,7 @@ class View {
       labels: label,
       datasets: [{
         label: 'EXPENSE TRACKER',
-        backgroundColor: ['#F64069', '#F9C235', '#3BA2EB', '#FACD57', '4BC0C0', '#11d8a3'],
+        backgroundColor: ['#F64069','#F9C235','#3BA2EB','#FACD57','#333','#8fa292','#877a62','#3cc793','#1208b1','#8e8c39','#11d8a3','#aae600','#7251d6','#91714a','#e86800','#76971d'],
         data: datas,
       }]
     };
@@ -188,7 +199,6 @@ class View {
   setUserInfo = (data) => {
 
     _(".userName").innerText = data.name;
-    _(".userIDnumber").innerText = `ID: ${data.id}`;
     data.display_picture != '' ? _(".profileImg").style.backgroundImage = `url(${data.display_picture})` : '';
 
     //editWindow Info 
@@ -205,7 +215,7 @@ class View {
     }
     _(".dashBoard") != null ? _(".dashBoard").remove() : '';
     _(".transactionArticle") != null ? _(".transactionArticle").remove() : '';
-    window.history.pushState("", "", `index.html`);
+    window.history.pushState("", "", `main.html`);
     window.history.pushState("", "", `${window.location.href}#DashBoard`);
 
     let clonedTemplate = _(".dashBoardSection").content.cloneNode(true);
@@ -214,12 +224,11 @@ class View {
   }
 
   showTranscationDetails = (e) => {
-    e.preventDefault();
 
     _(".dashBoard") != null ? _(".dashBoard").remove() : '';
     _(".transactionArticle") != null ? _(".transactionArticle").remove() : '';
 
-    window.history.pushState("", "", `index.html`);
+    window.history.pushState("", "", `main.html`);
     window.history.pushState("", "", `${window.location.href}#Transaction`);
 
     let clonedTemplate = _(".tranactionDiv").content.cloneNode(true);
@@ -277,14 +286,12 @@ class View {
   }
 
   closeAddTransactionPopup = () => {
-    document.querySelectorAll(".closeBtn").forEach((closeBtn) => {
-      closeBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (e.target.classList.contains("closeBtn")) {
-          _(".popUpContainer").remove();
-        }
-      });
-    });
+    _(".popUpContainer").addEventListener("mousedown", (e)=>{
+      e.stopPropagation();
+			if(e.target.classList.contains("closeBtn")){
+				_(".popUpContainer").remove();
+			}
+		})
   }
 
   categoryType = () => {
@@ -298,7 +305,7 @@ class View {
     }
   }
 
-  payMoodeType = () => {
+  payModeType = () => {
     _(".paymodeList").classList.toggle("showDropDown");
     _(".payMode i").classList.toggle("rotateDownBtn");
     _(".payMode").classList.toggle("listBorder");
@@ -314,10 +321,80 @@ class View {
     _(".dialog").classList.add("dialogPopup")
   }
 
+  selectClickedValue = (e, ele) => {
+    let tagName = e.target.tagName;
+    let val,className;
+    if (tagName == "H4") {
+      val = e.target.querySelector("span").innerText;
+      className = e.target.querySelector("span").classList[0];
+    }
+    else {
+      val = e.target.parentNode.querySelector("span").innerText;
+      className = e.target.parentNode.querySelector("span").classList[0];
+    }
+    ele.nextElementSibling.innerHTML = `<span class=${className}>${val}</span> <i class="fa-solid fa-caret-down"></i>`
+    ele.classList.remove("showDropDown");
+    ele.nextElementSibling.classList.remove("listBorder")
+  }
+
+  showInfoFromLeft = () => {
+    _(".info").classList.add("fromLeftInfo");
+    _(".dialog").classList.add("dialogPopup");
+  }
+
+  hideInfoFromLeft = () => {
+    _(".info").classList.remove("fromLeftInfo");
+    _(".editContainer").classList.remove("fromLeftInfo");
+    _(".listOfOptions").classList.remove("showListOfOptions");
+    _(".dialog").classList.remove("dialogPopup")
+
+    _(".filterBox") != null ? _(".filterBox").classList.remove("fromRightFilter") : '';
+
+  }
+
+  popUPincomeORexpense = (e) => {
+    let listofincome;
+    _(".newCatHead").innerHTML = `<span>Select Category</span><i class="fa-solid fa-caret-down newCat"></i>`;
+
+    _(".popUpContainer .DropDownBody").remove();
+    _(".popUpContainer .categoryHead i").classList.remove("rotateDownBtn");
+    _(".popUpContainer .categoryHead").classList.remove("listBorder");
+    if (e.target.id == "expense") {
+      listofincome = _("#ExpenseDropDown").content.cloneNode(true);
+    }
+    else {
+      listofincome = _("#incomeDropDown").content.cloneNode(true);
+    }
+    _(".popUpContainer .dropDown").prepend(listofincome);
+  }
+
+  showSuccessMsg = (type) => {
+    if(type=="expense"){
+      _(".successMsg").style.backgroundColor = "#ff9b99";
+      _(".successMsg b i").style.color = "#ff9b99"
+      _(".successMsg b").style.backgroundColor = "#da0500";      
+      _(".beforBorder").style.backgroundColor="#da0500";
+    }
+    else{
+      _(".successMsg").style.backgroundColor = "#A8F1C6";
+      _(".successMsg b i").style.color = "#A8F1C6"
+      _(".successMsg b").style.backgroundColor = "#208443";      
+      _(".beforBorder").style.backgroundColor="#208443";
+    }
+
+    _(".successMsg").classList.add("showSuccessMsg");
+    setTimeout(function () {
+      _(".successMsg").setAttribute("style", "transition:.3s;top:-100%")
+      setTimeout(function () {
+        _(".successMsg").classList.remove("showSuccessMsg");
+        _(".successMsg").removeAttribute("style");
+      }, 100);
+    }, 2000);
+  }
+
   callPagination = () => {
     this.listItems = document.querySelectorAll("#paginated-list .TransactionBody");
-    this.pageCount = Math.ceil(this.listItems.length / 16);
-
+    this.pageCount = Math.ceil(this.listItems.length / 15);
     for (let i = 1; i <= this.pageCount; i++) {
       this.appendPageNumber(i);
     }
@@ -336,6 +413,20 @@ class View {
       const pageIndex = Number(button.getAttribute("page-index"));
       if (pageIndex) {
         button.addEventListener("click", () => {
+        
+          if (!(_(".selectAllTrans").classList.contains("fa-square-check"))) {
+            _(".totalSelectedTrans").innerHTML = `0/<b>${this.lengthOfTranasaction}</b>`
+
+            document.querySelectorAll(".TransactionBody .fa-square-check").forEach(eachCheck=>{
+              eachCheck.classList.remove("fa-square-check");
+              eachCheck.parentNode.parentNode.classList.remove("backgroundAdd");
+            })
+          }  
+
+          if (_(".allCheck").classList.contains("fa-square-check")) {
+            _(".allCheck").classList.remove("fa-square-check")
+            _(".totalSelectedTrans").innerHTML = `0/<b>${this.lengthOfTranasaction}</b>`
+          }
           this.setCurrentPage(pageIndex);
         });
       }
@@ -361,8 +452,8 @@ class View {
     this.handleActivePageNumber();
     this.handlePageButtonsStatus();
 
-    const prevRange = (pageNum - 1) * 16;
-    const currRange = pageNum * 16;
+    const prevRange = (pageNum - 1) * 15;
+    const currRange = pageNum * 15;
 
     this.listItems.forEach((item, index) => {
       item.classList.add("filterBtn");
@@ -371,13 +462,6 @@ class View {
       if (index >= prevRange && index < currRange) {
         item.classList.remove("filterBtn");
         item.classList.add("listItem");
-
-        if (_(".selectAllTrans").checked == false) {
-          document.querySelectorAll(".checkBox").forEach((eachCheck) => {
-            eachCheck.checked = false;
-            eachCheck.parentNode.parentNode.classList.remove("backgroundAdd");
-          })
-        }
       }
     });
   };
@@ -414,14 +498,23 @@ class View {
     button.classList.remove("disabled");
     button.removeAttribute("disabled");
   };
+
+  errorOfAmount = (err) => {
+    _(".amountError").innerText = err;
+    this.showFilterError("amountError");
+  }
+
+  showFilterError = (ele) => {
+    _(`.${ele}`).classList.add("showFilterErr");
+    setTimeout(function () {
+      _(`.${ele}`).classList.remove("showFilterErr");
+    }, 2000)
+  }
+
+
 }
 
 
-
-//transaction detailc (balance,expense,income,transaction)
-//list five transaction
-//list all details
-//fill chart details
 
 
 

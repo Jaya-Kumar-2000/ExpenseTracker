@@ -2,56 +2,81 @@ let _ = function (ele) {
   return document.querySelector(ele);
 }
 class CreateObj {
-  constructor(type, description, date, amount, category, payMode) {
+  constructor(type, description, date, amount, category, payMode, id) {
     this.type = type;
     this.description = description;
-    this.date = new Date(date);
+    this.date = date;
     this.amount = amount;
     this.category = category;
     this.payMode = payMode;
   }
+
 }
+
 class Model {
   constructor() {
-    this.transactions = [];
+    this.allTransactions = [];
     this.income = 0;
     this.expense = 0;
     this.id = 0;
     this.lastMonthData;
   }
 
-  addTransaction = (type, description, date, amount, category, payMode) => {
-    this.transactions.push(new CreateObj(type, description, date, amount, category, payMode));
-    return this.transactions;
+  getDahBoardData = (id) => {
+    let arr = [];
+    this.allTransactions = [];
+    // let today = new Date();
+    // console.log(today.toLocaleDateString())
+    // let newDate = new Date();
+    // newDate.setMonth(new Date().getMonth() - 1);
+    // console.log(newDate.toLocaleDateString())
+
   }
 
-  seachTransaction = (inputText) => { //search based on description
-    let userInput = inputText.toLowerCase();
+  getTransactionData = (id) => {
+    return fetch(`http://127.0.0.1:8089/api/v1/users/${id}/accounts`)
+      .then(res => {
+        if (res.status != 204) {
+          return res.json();
+        }
+      })
+      .then(res => {
+        if(res!=undefined){
+         this.allTransactions = res.accounts;
+        }
+        return "success";
+      })
+  }
 
-    let filteredArray = this.transactions.filter(function (ele) {
-      return (ele.description.toLowerCase().includes(userInput) || ele.category.toLowerCase().includes(userInput))
+  seachTransaction = (inputText) => { //search based on description || Category
+    let userInput = inputText.toLowerCase();
+    let filteredArray = this.allTransactions.filter(function (ele) {
+      return (ele.description.toLowerCase().includes(userInput) || ele.category.display_name.toLowerCase().includes(userInput))
     })
     return filteredArray;
   }
 
-  
+
   lastFiveTransactions = () => {
-    let temp = this.transactions.slice();
+    let temp = this.allTransactions.slice();
     return temp.splice(-5);
   }
 
   expenseByCategory = () => {
     let obj = {}
 
-    this.lastMonthData.forEach(function (t) {
-      if (t.type == 'Expense') {
-        if (obj[t.category]) {
-          obj[t.category] += t.amount;
+    this.lastMonthData.forEach(function (data) {
+      if (data.type.name == 'expense') {
+
+        const val = data.category.display_name;
+        if (obj[val]) {
+          obj[val] += data.amount;
         } else {
-          obj[t.category] = t.amount;
+          obj[val] = data.amount;
         }
       }
     })
+
     let donutObj = {
       keys: Object.keys(obj),
       values: Object.values(obj)
@@ -59,12 +84,9 @@ class Model {
     return donutObj;
   }
 
-  allTransactionDetails = () => {
-    return this.transactions;
-  }
 
   lastMonthTrans = () => {
-    this.lastMonthData = this.transactions.slice().splice(-10);
+    this.lastMonthData = this.allTransactions.slice().splice(-10);
   }
 
   transactionDetails = () => {
@@ -73,79 +95,14 @@ class Model {
     this.balance = 0;
 
     this.lastMonthData.forEach((eachTrans) => {
-      eachTrans.type == "Income" ? this.income += eachTrans.amount : this.expense += eachTrans.amount;
+      eachTrans.type.name == "income" ? this.income += eachTrans.amount : this.expense += eachTrans.amount;
     })
 
     return {
       income: this.income,
       expense: this.expense,
       balance: this.income - this.expense,
-      totalTransaction: this.transactions.slice(0, 10).length
-    }
-  }
-
-  getFilterValue = () => {
-    let startingDate = _(".startingDate").value
-    let endingDate = _(".endingDate").value;
-    let cashFolwArr = [];
-    let payModeArr = [];
-    let filterCategoryArr = [];
-    let minValue = _(".minValue").value;
-    let maxValue = _(".maxValue").value;
-    let isDateCorrect = true;
-
-
-    if (startingDate != '' && endingDate != '') {
-      if (new Date(startingDate) > new Date(endingDate) || new Date(startingDate) > new Date() || new Date(endingDate) > new Date()) {
-        startingDate = '';
-        endingDate = '';
-        isDateCorrect = false;
-        _(".filterError").innerText = "Please provide a valide Date";
-        this.showFilterError();
-      }
-    }
-    else if (startingDate != '' && endingDate == '' || startingDate == '' && endingDate != '') {
-      startingDate = '';
-      endingDate = '';
-      isDateCorrect = false;
-      _(".filterError").innerText = "Date field sholud not be empty";
-      this.showFilterError(startingDate, endingDate);
-    }
-
-    let cashFolwCheck = document.querySelectorAll('.cashFlowCheck');
-    for (var i = 0; i < cashFolwCheck.length; i++) {
-      if (cashFolwCheck[i].checked) {
-        let caskflowVal = cashFolwCheck[i].value;
-        if (this.incomeOrExpense.includes(caskflowVal)) {
-          cashFolwArr.push(caskflowVal);
-        }
-      }
-    }
-
-    let payModeCheck = document.querySelectorAll('.payModeCheck');
-    for (var i = 0; i < payModeCheck.length; i++) {
-      if (payModeCheck[i].checked) {
-        let paymodeValue = payModeCheck[i].value;
-        if (this.patmodeArr.includes(paymodeValue)) {
-          payModeArr.push(paymodeValue);
-        }
-      }
-    }
-
-    let selesctCat = document.querySelectorAll('.filterCheck');
-    for (var i = 0; i < selesctCat.length; i++) {
-      if (selesctCat[i].checked) {
-        let selectedCategories = selesctCat[i].value;
-        if (this.categoryArr.includes(selectedCategories)) {
-          filterCategoryArr.push(selectedCategories);
-        }
-      }
-    }
-
-    if (isDateCorrect) {
-      if (startingDate != '' || endingDate != '' || cashFolwArr.length != 0 || payModeArr.length != 0 || filterCategoryArr.length != 0 || minValue != '' || maxValue != '') {
-        console.log("some Value");
-      }
+      totalTransaction: this.allTransactions.slice(0, 10).length
     }
   }
 
@@ -164,8 +121,11 @@ class Model {
         return x.split("=");
       });
       arr.forEach(function (eachCookie) {
-        if (eachCookie[0] == "userLogin" && eachCookie[1] == "True") {
+        if (eachCookie[0] == "userLogin" && eachCookie[1] == "true") {
           isUserloggedIn = true;
+        }
+        else {
+          isUserloggedIn = false;
         }
       });
       if (isUserloggedIn) {
@@ -173,8 +133,8 @@ class Model {
           let lastout = new Date(localStorage.getItem('lastOUT'));
           var diff = (new Date().getTime() - lastout.getTime()) / 1000;
           diff /= (60 * 60);
-          console.log(diff)
-          if (diff >= 1) {
+          if (diff >= 8) {
+            localStorage.setItem("isloggedOut", "Yes");
             this.logoutUser();
           }
         }
@@ -182,19 +142,20 @@ class Model {
           this.logoutUser();
         }
       }
-
+      else {
+        this.logoutUser();
+      }
     }
     else {
-      window.location.replace("login.html");
+      this.logoutUser();
     }
   }
 
-  logoutUser = ()=>{
+  logoutUser = () => {
     document.cookie = "userLogin" + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    window.location.replace("login.html");
+    window.location.replace("index.html");
     localStorage.removeItem("userID");
     localStorage.removeItem("lastOUT");
-
   }
 
   getUserInfo = (uID) => {
@@ -203,11 +164,16 @@ class Model {
         return res.json();
       })
       .then(data => {
-        return (data)
+        if (data.status == "error") {
+          this.logoutUser();
+        }
+        else {
+          return (data)
+        }
       })
   }
 
-  editUserInfo = (uID,editData)=>{
+  editUserInfo = (uID, editData) => {
     fetch(`http://127.0.0.1:8089/api/v1/users/${uID}`, {
       method: 'PUT',
       headers: {
@@ -217,7 +183,7 @@ class Model {
     })
   }
 
-  editPassWord = (obj)=>{
+  editPassWord = (obj) => {
     return fetch(`http://127.0.0.1:8089/api/v1/users/reset/password`, {
       method: 'PUT',
       headers: {
@@ -225,18 +191,48 @@ class Model {
       },
       body: JSON.stringify(obj)
     })
-    .then(res => {
-      return res.json();
-    })
-    .then(data => {
-      return data;
-    });
+      .then(res =>res.json())
+      .then(data =>data);
   }
-  
 
-  popState = (state)=>{
+  sendNewTransData = (obj, userId) => {
+    return fetch(`http://127.0.0.1:8089/api/v1/users/${userId}/accounts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify(obj)
+    }).then(res => res.json())
+      .then(data => data)
+  }
+
+  deleteTransaction = (userId, transID) => {
+    fetch(`http://127.0.0.1:8089/api/v1/users/${userId}/accounts/${transID}`, {
+      method: 'DELETE',
+    }).then(res => res.json())
+      .then(res => {
+        // this.getDahBoardData(userId);
+        this.getTransactionData(userId);
+      })
+  }
+
+  updateTrans = (userId, transID, obj) => {
+    return fetch(`http://127.0.0.1:8089/api/v1/users/${userId}/accounts/${transID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify(obj)
+    }).then(res => res.json())
+      .then(res => res)
+  }
+
+
+  popState = (state) => {
     window.onpopstate = function () {
-      window.history.pushState("", "", `index.html#${state}`);	
+      window.history.pushState("", "", `main.html#${state}`);
     };
   }
 }

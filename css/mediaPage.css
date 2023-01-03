@@ -3,11 +3,11 @@
         position: fixed;
         right: -100%;
         top: 0;
-        z-index: 2;
+        z-index: 100;
 	    transition: .2s ease-out;
     }
     .filterBtn{
-        display: block;
+        display: var(--displayblock);
     }
 
     .SearchBox{
@@ -16,6 +16,9 @@
     .allTransactionDiv{
         margin-right: 0;
     }
+    .transactionArticle{
+        height: calc(100% - 50px) !important;
+    }
     .transactionArticle .innerChild{
         width: 100%;
         padding: 10px;
@@ -23,13 +26,13 @@
     .dashBoard{
         padding: 10px;
     }
-
-}    
+}   
 @media (max-width: 1800px) and (min-width: 1325px){ 
     main{
         width: 90%;
     }
 }    
+
 @media (min-width: 980px) and (max-width: 1325px){
     main{
         width: 100%;
@@ -37,7 +40,9 @@
     .secondDiv{
         background-size: 45% !important;
     } 
+
 }
+
 @media (max-width: 980px){
     main{
         width: 100%;
@@ -50,12 +55,17 @@
     }
     td, th{
         padding: 10px ;
-        text-align: center;
+        text-align: var(--center);
     }
     .secondDiv{
         background-size: 60% !important;
     } 
+
+    .search::placeholder{
+        font-size: 15px;
+    }  
 }
+
 
 @media (max-width: 786px){
     main{
@@ -64,15 +74,15 @@
     .info{
         position: fixed;
         left: -100%;
-        z-index: 2;
+        z-index: 15;
 	    transition: .2s ease-out;
     }
     .editContainer{
         height: 100%;
         top: 0;
     }
-    .logo{
-        display: none;
+    .logoExpense{
+        display: var(--none);
     }
     .imageDiv, .linksDiv{
         padding: 35px 0;
@@ -81,7 +91,7 @@
         width: 100%;
     }
     .mainContainer .navbar-header{
-        display: flex;
+        display: var(--displayFlex);
     } 
     article .firstDiv,.secondDiv{
         margin-top: 15px;
@@ -96,18 +106,31 @@
         padding: 10px 6px;
     }
     .filterBtn{
-        display: none;
+        display: var(--none);
     }
     .secondDiv{
         background-size: 60% !important;
     } 
+
+    .checkStyle{
+        width:35px;
+    }
+    .selectAllTransDiv {
+        margin-left: 7px;
+    }
+    .selectAllTrans{
+        font-size: 19px ;
+    }
+    .checkStyle i{
+        font-size: 17px;
+    }
 }
 
 @media (max-width: 650px){
     .NoDataFoundErr{
         width: 80%;
         padding: 0 21px;
-        text-align: center;
+        text-align: var(--center);
     }
     .empty-state__message{
             font-size: 1.3rem;
@@ -118,6 +141,17 @@
     .secondDiv{
         background-size: 73% !important;
     }
+    .selectAllTransDiv{
+        margin-left: 4px;
+    }
+    .innerBox{
+        min-width: 480px;
+        padding: 20px;
+    }
+    td, th{
+        font-size: 12px;
+    }
+
 }
 
 @media (max-width: 530px){
@@ -129,7 +163,25 @@
     }
     .secondDiv h2,.noRecentTrans{
         font-size: 15px;
-    }    
+    }   
+    .innerBox{
+        min-width: 400px;
+    } 
+    td, th{
+        font-size: 11px;
+    }  
+    .checkStyle{
+        width:30px;
+    }
+    .selectAllTransDiv {
+        margin-left: 5px;
+    }
+    .selectAllTrans{
+        font-size: 17px ;
+    }
+    .checkStyle i{
+        font-size: 15px;
+    }
 }
 
 
@@ -159,18 +211,37 @@
     .secondDiv .chartBox{
         width: 330px;
     }
-    table{
-        font-size: 10px;
-    }
     td, th{
         padding: 10px 5px;
+        font-size: 8.5px;
     }
+    .editDelterBtn{
+        height: 30px;
+    }
+    .editDelterBtn button {
+        height: 20px;
+        font-size: 11px;
+        margin: 4px 1px;
+    }
+    .checkStyle{
+        width: 25px;
+    }
+    .selectAllTransDiv {
+        margin-left: 5px;
+    }
+    .selectAllTrans{
+        font-size: 15px ;
+    }
+    .checkStyle i{
+        font-size: 13px;
+    }
+
     .thirdDiv > h1{
         font-size: 15px;
     }
     .popUpContainer .popupBox{
         width: 90%;
-        height: auto;
+        height: var(--auto);
     }
     .popupBox div input:not([type=radio]){
         margin: 7px 0;
@@ -183,6 +254,7 @@
     }
     .popupBox div input:not([type=radio]){
         margin: 5px 0;
+        padding: 0;
     }  
     .popupBox > div{
         margin: 5px 0 !important;
@@ -220,9 +292,29 @@
     .secondDiv h2,.noRecentTrans{
         font-size: 13px;
     }  
+    .search::placeholder{
+        font-size: 13px;
+    }  
+    .innerBox{
+        width: 80%;
+        min-width: 330px;
+        padding: 10px;
+    }  
+    .innerBox p{
+        font-size: 12px;
+        line-height: 18px;
+    }
+    .innerBox .twoButtons button{
+        margin-top: 10px;
+    }
+    .totalSelectedTrans{
+        margin-left: 5px;
+    }
+    .totalSelectedTrans,.totalSelectedTrans b{
+        font-size: 12px;
+    }
 }    
 @media (max-width: 360px){
-
     .info{
         width: 150px;
     }
@@ -232,7 +324,7 @@
     .profileImg{
         width: 80px;
         height: 80px;
-        background-size: 110px;
+        background-size: 80px;
     }
     .linksDiv a{
         border-radius: 5px;
@@ -247,12 +339,20 @@
     .secondDiv .chartBox{
         width: 255px;
     }
-    table{
-        font-size: 8px;
-    }
     td, th{
-        padding: 6px 3px;
+        padding: 6px 2px;
+        font-size: 7.5px;
     }
+    .selectAllTransDiv {
+        margin-left: 5px;
+    }
+    .selectAllTrans{
+        font-size: 13px ;
+    }
+    .checkStyle i{
+        font-size: 11px;
+    }
+    
     .thirdDiv > h1{
         font-size: 18px;
         padding: 8px 10px;
@@ -323,18 +423,50 @@
     }
     .secondDiv h2,.noRecentTrans{
         font-size: 12px;
-    }   
+    }
+
+    .SearchBox .newTransaction{
+        height:25px
+    }
+    .SearchBox .search{
+        height:25px;
+        font-size: 12px;
+        padding-left: 5px;
+    }
+    .search::placeholder{
+        font-size: 9px;
+    }    
+    .editDelterBtn button{
+        height: 23px;
+        font-size: 11px;
+        margin: 6px 2px;
+    }  
+    .totalSelectedTrans,.totalSelectedTrans b{
+        font-size: 10px;
+    }  
+    .innerBox{
+        width: 90%;
+        min-width: 250px;
+    }  
+    .innerBox p{
+        line-height: 14px;
+    }
+    .innerBox .twoButtons button{
+        margin-top: 5px;
+        font-size: 10px;
+    }
 }       
 
 @media (max-width: 280px){
     .navbar-brand{
         background-position: 2px;
     }
-    table{
-        font-size: 7px;
-    }
+
     td, th{
-        padding: 4px;
+        padding: 5px 1px
+    }
+    .material-symbols-outlined{
+        font-size: 17px  !important;
     }
     .thirdDiv > h1{
         font-size: 16px;
@@ -368,8 +500,50 @@
     .thirdDiv{
         min-height: 70px !important;
     }
-
     .secondDiv h2,.noRecentTrans{
         font-size: 10px;
-    }        
+    } 
+    .transactionArticle form{
+        height: 50%;
+    }
+    .filterAndCancelBtn{
+        margin-top: 20px;
+        justify-content: space-evenly;
+    }
+    .totalSelectedTrans,.totalSelectedTrans b{
+        font-size: 9px;
+    }
+    .innerBox{
+        width: 90%;
+        min-width: 200px;
+    }  
+    .innerBox p{
+        font-size: 10px;
+        line-height: 14px;
+    }
+    .innerBox .twoButtons button{
+        font-size: 8px;
+    }
+    .editDelterBtn{
+        height: 25px;
+    }
+    .editDelterBtn button {
+        height: 20px;
+        font-size: 8px;
+        margin: 4px 1px;
+    }
+
+    td, th{
+        font-size: 6.8px;
+    }
+    .selectAllTransDiv {
+        margin-left: 5px;
+    }
+    .selectAllTrans{
+        font-size: 12px ;
+    }
+    .checkStyle i{
+        font-size: 10px;
+    }
+
 }   
