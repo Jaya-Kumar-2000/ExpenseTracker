@@ -156,9 +156,15 @@
       </div>
       <div class="secondDiv">
         <h1>Total Expenses</h1>
-        <div class="chartBox">
-          <canvas id="myChart"></canvas>
+        <div class="chartSection">
+          <div class="chartBox">  
+            <canvas id="myChart"></canvas>
+          </div>
+          <div class="chartDetails">
+            <table><tbody></tbody></table>
+          </div>
         </div>
+       
       </div>
       <div class="thirdDiv">
         <h1>Recent Transaction</h1>
@@ -184,7 +190,7 @@
       <div class="innerChild">
         <h1 class="dashBoardHead">All Transactions</h1>
         <div class="SearchBox">
-          <input type="text" class="search" placeholder="Search Transaction by Category or Description" autofocus="off">
+          <input type="text" class="search" placeholder="Search Transaction by Category or Description">
           <button type="button" class="addTransBtn newTransaction">ADD TRANSACTION</button>
           <button type="button" class="addTransBtn filterBtn filterMenus">FILTER</button>
         </div>

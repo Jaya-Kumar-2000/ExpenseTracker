@@ -97,12 +97,10 @@ class landingModel {
         _(".userForm")!=null?_(".userForm").remove():'';
 
         let clonedFormTemplate = _(`.allFormTemplate`).content.cloneNode(true);
-        _("body").prepend(clonedFormTemplate);
+        _(".landingParent").prepend(clonedFormTemplate);
 
         let clonedTemplate = _(`.${type}`).content.cloneNode(true);
         _(".forms").append(clonedTemplate);
-
-
 
 		_(".userForm").addEventListener("mousedown", (e)=>{
 			if(e.target.classList.contains("closeFormBtn")){
@@ -114,11 +112,10 @@ class landingModel {
     logUnUser = (e) => {
         e.preventDefault();
         if(navigator.onLine){
-            fetch('http://127.0.0.1:8089/api/v1/auth', {
+            fetch('http://172.24.205.76:8089/api/v1/auth', {
                 method: 'POST',
-                // mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'applicatioindex.html#DashBoardn/json',
+                    'Content-Type': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
                 },
                 
@@ -398,7 +395,7 @@ class landingModel {
 
 	sendNewUserData = () => {
 
-		fetch('http://127.0.0.1:8089/api/v1/users', {
+		fetch('http://172.24.205.76:8089/api/v1/users', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -456,5 +453,7 @@ class landingModel {
 
 
 window.onload = new landingModel().eventForLanding();
+
+
 
 

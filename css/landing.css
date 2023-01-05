@@ -39,8 +39,7 @@ html,body{
     width: var(--hundredPercent);
     min-height: 600px;
     display: var(--displayGrid);
-    place-items: var(--center);
-    background-color: rgba(214, 156, 102,.7);
+    place-items: var(--center); 
     font-family: 'Prompt', sans-serif;
 }
 .landingContainer{
@@ -184,6 +183,7 @@ hr{
     justify-content: var(--center);
     align-items: var(--center);
     backdrop-filter: blur(6px);
+    overflow: hidden;
 }
 
 .userForm > i{

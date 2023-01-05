@@ -117,8 +117,9 @@
 }    
 
 @media (max-width: 480px){
-    .landingContainer{
-        min-width: 360px;
+    .landingContainer {
+        min-width: 270px;
+        padding: 0 5px;
     }   
     .header{
         padding: 10px 0 0;
@@ -159,7 +160,6 @@
      .imageBigLogo {
         background-size: 110%;
     }
-
 }    
 
 @media (max-width: 360px){
@@ -211,10 +211,6 @@
 	}
     .landingContent{
         height: 85%;
-    }
-    .landingContainer{
-        min-width: 270px;
-        padding: 0 5px;
     }   
     .header{
         padding: 8px 5px 0;
@@ -254,6 +250,7 @@
      .imageBigLogo {
         background-size: 110%;
     }
+
 }
 
 

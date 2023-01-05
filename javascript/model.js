@@ -34,7 +34,7 @@ class Model {
   }
 
   getTransactionData = (id) => {
-    return fetch(`http://127.0.0.1:8089/api/v1/users/${id}/accounts`)
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${id}/accounts`)
       .then(res => {
         if (res.status != 204) {
           return res.json();
@@ -159,7 +159,7 @@ class Model {
   }
 
   getUserInfo = (uID) => {
-    return fetch(`http://127.0.0.1:8089/api/v1/users/${uID}`)
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${uID}`)
       .then(res => {
         return res.json();
       })
@@ -174,7 +174,7 @@ class Model {
   }
 
   editUserInfo = (uID, editData) => {
-    fetch(`http://127.0.0.1:8089/api/v1/users/${uID}`, {
+    fetch(`http://172.24.205.76:8089/api/v1/users/${uID}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -184,7 +184,7 @@ class Model {
   }
 
   editPassWord = (obj) => {
-    return fetch(`http://127.0.0.1:8089/api/v1/users/reset/password`, {
+    return fetch(`http://172.24.205.76:8089/api/v1/users/reset/password`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -196,7 +196,7 @@ class Model {
   }
 
   sendNewTransData = (obj, userId) => {
-    return fetch(`http://127.0.0.1:8089/api/v1/users/${userId}/accounts`, {
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -208,25 +208,20 @@ class Model {
   }
 
   deleteTransaction = (userId, transID) => {
-    fetch(`http://127.0.0.1:8089/api/v1/users/${userId}/accounts/${transID}`, {
+    fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts/${transID}`, {
       method: 'DELETE',
-    }).then(res => res.json())
-      .then(res => {
-        // this.getDahBoardData(userId);
-        this.getTransactionData(userId);
-      })
+    })
   }
 
   updateTrans = (userId, transID, obj) => {
-    return fetch(`http://127.0.0.1:8089/api/v1/users/${userId}/accounts/${transID}`, {
+    fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts/${transID}`, {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8'
       },
       body: JSON.stringify(obj)
-    }).then(res => res.json())
-      .then(res => res)
+    })
   }
 
 

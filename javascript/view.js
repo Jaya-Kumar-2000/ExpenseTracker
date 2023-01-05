@@ -157,7 +157,7 @@ class View {
     document.querySelector('.allTransDetails tbody').appendChild(docFrag);
 
     document.querySelector('.allTransactionDiv').innerHTML += ` <div class="pagination">
-      <button class="pagination-button" id="prev-button" aria-label="Previous page" title="Previous page">
+      <button class="pagination-button" id="prev-button" aria-label="Previous page">
       <i class="fa-solid fa-backward"></i>
     </button>
     <nav class="pagination-container">
@@ -165,7 +165,7 @@ class View {
       </div>          
     </nav>
     
-    <button class="pagination-button" id="next-button" aria-label="Next page" title="Next page">
+    <button class="pagination-button" id="next-button" aria-label="Next page">
     <i class="fa-solid fa-forward"></i>
     </button></div>`;
 
@@ -173,26 +173,43 @@ class View {
 
   }
 
-  chart = (label, datas) => {
+  chart = (label, datas,expeseVal) => {
 
+    let totalExpense = expeseVal.expense;
+
+    let bg = ['#F64069','#F3EFE0','#3BA2EB','#FACD57','#333','#8fa292','#877a62','#3cc793','#1208b1','#8e8c39','#11d8a3','#aae600','#7251d6','#91714a','#e86800','#76971d']
+    label.forEach((eachExpense,index)=>{
+      let tableRow = `<tr>
+      <td class="colorCircle"><span class="expeseColor" style="background-color: ${bg[index]}"></span></td>
+      <td>${eachExpense}</td>
+      <td>&#8377;${datas[index]}</td>
+      <td>${((datas[index]/totalExpense)*100).toFixed(2)}%</td>
+      </tr>`;
+
+      _(".chartDetails tbody").innerHTML+=tableRow;
+    })
+
+    // console.log(label,datas)
     const data = {
       labels: label,
       datasets: [{
-        label: 'EXPENSE TRACKER',
-        backgroundColor: ['#F64069','#F9C235','#3BA2EB','#FACD57','#333','#8fa292','#877a62','#3cc793','#1208b1','#8e8c39','#11d8a3','#aae600','#7251d6','#91714a','#e86800','#76971d'],
+        backgroundColor: bg,
         data: datas,
       }]
     };
 
-    const config = {
+    new Chart(
+      document.getElementById('myChart'),{
       type: 'doughnut',
-      data: data
-    };
-
-    const myChart = new Chart(
-      document.getElementById('myChart'),
-      config
-    );
+      data: data,
+      options: {
+        plugins: {
+            legend: {
+                display: false,
+            }
+        }
+    }
+    });
   }
 
 
@@ -244,20 +261,19 @@ class View {
   }
 
   resizeEventforDashboard = () => {
-    _(".info").classList.remove("fromLeftInfo")
-    _(".dialog").classList.remove("dialogPopup")
-
-    _(".editContainer").classList.remove("fromLeftInfo");
+    if (document.documentElement.clientWidth >= 786) {
+      _(".dialog").classList.remove("dialogPopup")
+    }
+    else{
+      if(_(".info").classList.contains("fromLeftInfo")){
+        _(".dialog").classList.add("dialogPopup")
+      }  
+    }
     _(".listOfOptions").classList.remove("showListOfOptions");
   }
 
   resizeEventforTransaction = () => {
-    _(".info").classList.remove("fromLeftInfo")
     _(".dialog").classList.remove("dialogPopup")
-
-    _(".editContainer").classList.remove("fromLeftInfo");
-    _(".listOfOptions").classList.remove("showListOfOptions");
-
     _(".filterBox").classList.remove("fromRightFilter");
     _(".filterBox .categoryList").classList.remove("showDropDown");
     _(".filterBox .categoryHead i").classList.remove("rotateDownBtn");
@@ -347,9 +363,7 @@ class View {
     _(".editContainer").classList.remove("fromLeftInfo");
     _(".listOfOptions").classList.remove("showListOfOptions");
     _(".dialog").classList.remove("dialogPopup")
-
     _(".filterBox") != null ? _(".filterBox").classList.remove("fromRightFilter") : '';
-
   }
 
   popUPincomeORexpense = (e) => {
@@ -413,20 +427,6 @@ class View {
       const pageIndex = Number(button.getAttribute("page-index"));
       if (pageIndex) {
         button.addEventListener("click", () => {
-        
-          if (!(_(".selectAllTrans").classList.contains("fa-square-check"))) {
-            _(".totalSelectedTrans").innerHTML = `0/<b>${this.lengthOfTranasaction}</b>`
-
-            document.querySelectorAll(".TransactionBody .fa-square-check").forEach(eachCheck=>{
-              eachCheck.classList.remove("fa-square-check");
-              eachCheck.parentNode.parentNode.classList.remove("backgroundAdd");
-            })
-          }  
-
-          if (_(".allCheck").classList.contains("fa-square-check")) {
-            _(".allCheck").classList.remove("fa-square-check")
-            _(".totalSelectedTrans").innerHTML = `0/<b>${this.lengthOfTranasaction}</b>`
-          }
           this.setCurrentPage(pageIndex);
         });
       }
@@ -447,6 +447,22 @@ class View {
   };
 
   setCurrentPage = (pageNum) => {
+
+    if (!(_(".selectAllTrans").classList.contains("fa-square-check"))) {
+      _(".totalSelectedTrans").innerHTML = `0/<b>${this.lengthOfTranasaction}</b>`
+
+      document.querySelectorAll(".TransactionBody .fa-square-check").forEach(eachCheck=>{
+        eachCheck.classList.remove("fa-square-check");
+        eachCheck.parentNode.parentNode.classList.remove("backgroundAdd");
+      })
+    }  
+
+    if (_(".allCheck").classList.contains("fa-square-check")) {
+      _(".allCheck").classList.remove("fa-square-check")
+      _(".totalSelectedTrans").innerHTML = `0/<b>${this.lengthOfTranasaction}</b>`
+    }
+
+    
     this.currentPage = pageNum;
 
     this.handleActivePageNumber();

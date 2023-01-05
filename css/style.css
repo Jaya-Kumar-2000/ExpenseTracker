@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Work+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300&family=Raleway:wght@200&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400&display=swap');
 
 html,
 body {
@@ -59,14 +60,14 @@ main .mainContainer {
 
 
 .editContainer {
-	height: calc(var(--hundredPercent) - 55px);
-	width: var(--hundredPercent);
-	position: var(--positionAbsolute);
-	left: -100%;
-	top: 55px;
-	background-color: #F5F5F5;
-	padding: 5px;
-	transition: .2s;
+    height: calc(var(--hundredPercent) - 55px);
+    width: var(--hundredPercent);
+    position: var(--positionAbsolute);
+    left: -100%;
+    top: 55px;
+    background-color: #F5F5F5;
+    padding: 5px;
+    transition: .2s;
 }
 
 .userInfo {
@@ -478,6 +479,7 @@ li.removeBtn {
 
 .dashBoard {
 	padding: 15px 20px;
+	overflow: var(--auto);
 }
 
 .dashBoardHead {
@@ -490,7 +492,7 @@ li.removeBtn {
 	height: var(--auto);
 	width: var(--hundredPercent);
 	background: var(--colorWhite);
-	margin-top: 13px;
+	margin-top: 15px;
 	box-shadow: 0 2px 4px 0 rgb(0 0 0 / 10%);
 }
 
@@ -545,17 +547,43 @@ article .firstDiv {
 .secondDiv {
 	padding: 10px;
 	border-radius: 5px;
-	height: 490px !important;
+	height: 485px !important;
 	background-size: 48% !important;
 	position: var(--positionRelative);
 }
-
-.secondDiv .chartBox {
-	width: 450px;
-	height: 95%;
-	margin: var(--auto);
+.chartSection{
+	width: 100%;
+	height: calc(100% - 15px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
+.secondDiv .chartBox,.chartDetails {
+	width: 38%;
+
+	min-width: 350px;
+}
+.chartDetails table{
+	margin: auto;
+	width: 75%;
+	font-size: 15px;
+	font-family: 'Kanit', sans-serif;
+}
+.chartDetails table td{
+	height: 28px;	
+}
+.colorCircle{
+	display: grid;
+	margin-right: 5px;
+	place-items: center;
+}
+.expeseColor{
+	display: inline-block;
+	width: 16px;
+    height: 16px;
+    border-radius: 16px;
+}
 .secondDiv h1,
 .thirdDiv>h1 {
 	font-weight: 300;
@@ -587,7 +615,7 @@ article .firstDiv {
 	transform: translate(-50%, -50%);
 }
 
-table {
+.lastFiveTransaction,.allTransDetails {
 	border-collapse: collapse;
 	width: var(--hundredPercent);
 }
@@ -624,8 +652,8 @@ table {
 	cursor: var(--cursorPointer);;
 }
 
-td,
-th {
+.TransactionBody td,
+.TransactionHead th {
 	padding: 7px 12px;
 	text-align: left;
 	border: var(--none);
@@ -636,7 +664,7 @@ th {
     max-width: 225px;
     overflow: hidden;
 }
-th{
+.TransactionHead th{
 	padding: 12px;
 }
 
@@ -657,7 +685,7 @@ th{
 
 .amountRightAllign {
 	font-weight: bold;
-	text-align: right;
+	text-align: right !important;
 }
 
 /* Transaction Section */
@@ -672,6 +700,7 @@ th{
 	padding: 20px 0 0 20px;
 	background-size: 70% !important;
 	position: var(--positionRelative);
+	overflow: var(--auto);
 }
 
 .SearchBox {
@@ -912,12 +941,12 @@ input[type="checkbox"]{
 }
 
 .transactionArticle form {
-	height: 60%;
-	display: var(--displayFlex);
-	flex-direction: var(--column);
-	justify-content: var(--spaceEvenly);
-	padding: 10px;
-	min-height: 500px;
+	height: 55%;
+    display: var(--displayFlex);
+    flex-direction: var(--column);
+    justify-content: space-between;
+    padding: 10px;
+    min-height: 400px;
 }
 
 .filterBox h2 i {
@@ -1415,7 +1444,7 @@ input[type="checkbox"]{
 }
 
 .pagination-number:hover {
-	background: rgb(238, 238, 238);
+	background: rgb(221 221 221 / 30%);
 }
 
 .pagination-number.active {
@@ -1424,8 +1453,7 @@ input[type="checkbox"]{
 }
 
 .disabled {
-	opacity: 0;
-	cursor: default;
+	cursor: not-allowed;
 }
 
 .deletePopUP{

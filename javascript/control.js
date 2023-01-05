@@ -134,7 +134,7 @@ class Control {
 
     if (isExpensehappened != undefined) {
       _(".secondDiv").style.background = "#fff";
-      this.view.chart(this.model.expenseByCategory().keys, this.model.expenseByCategory().values);
+      this.view.chart(this.model.expenseByCategory().keys, this.model.expenseByCategory().values,this.model.transactionDetails());
     }
     else {
       _(".secondDiv").style.background = `#fff url("images/no-data-found.gif") center no-repeat`
@@ -516,24 +516,25 @@ class Control {
         this.totalClickedCheckbox = 0;
 
         let objToEdit = this.model.allTransactions[this.editingIndex];
-        this.model.updateTrans(this.userDetails.user.id, objToEdit.id, obj)
-          .then(res => {
-            if (res.status == "success") {
-              // this.model.getDahBoardData(userId);
-              this.model.getTransactionData(this.userDetails.user.id)
-                .then(response => {
-                  this.getDetails();
-                });
-            }
-          });
+
+        objToEdit.amount = amount;
+        objToEdit.category.name=category;
+        objToEdit.type.name=typeOfTrans;
+        objToEdit.pay_type.name=payMode;
+        objToEdit.description = desc;
+        objToEdit.date = date;
+   
+        this.model.updateTrans(this.userDetails.user.id, objToEdit.id, obj);
+
+        this.getDetails();
 
         let opc = 0;
         let time = setInterval(() => {
-          _(`.row${this.editingTrans}`).setAttribute("style", `background:rgba(254, 250, 221,${Math.abs(Math.sin(opc += .1))});`);
+          _(`.row${this.editingTrans}`) !=null ? _(`.row${this.editingTrans}`).setAttribute("style", `background:rgba(254, 250, 221,${Math.abs(Math.sin(opc += .1))});`):'';
         }, 13);
         setTimeout(() => {
           clearInterval(time)
-          _(`.row${this.editingTrans}`).removeAttribute("style");
+          _(`.row${this.editingTrans}`) !=null ? _(`.row${this.editingTrans}`).removeAttribute("style"):'';
         }, 1500)
       }
 
@@ -631,11 +632,10 @@ class Control {
 
   deleteTranasction = () => {
     document.querySelectorAll(".TransactionBody .fa-square-check").forEach((eachCheckBox) => {
-      
       let tid = Number(eachCheckBox.id);
-      
       let index = this.model.allTransactions.findIndex(x => x.id === tid);
       let UID = this.userDetails.user.id;
+      this.model.allTransactions.splice(index, 1)
       this.model.deleteTransaction(UID, tid)
     });
 
