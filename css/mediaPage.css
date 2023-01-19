@@ -6,6 +6,9 @@
         z-index: 100;
 	    transition: .2s ease-out;
     }
+    .filterMenus{
+        display: block !important;
+    }
     .SearchBox{
         padding-right: 0;
     }
@@ -61,6 +64,7 @@
     } 
     .chartSection{
         flex-direction: column;
+        min-height: 300px;
     }
 
     .search::placeholder{
@@ -79,6 +83,9 @@
         left: -100%;
         z-index: 15;
 	    transition: .2s ease-out;
+    }
+    .filterMenus{
+        display: none !important;
     }
     .editContainer{
         height: 100%;
@@ -124,10 +131,10 @@
         margin-left: 7px;
     }
     .selectAllTrans{
-        font-size: 19px ;
+        font-size: 17px ;
     }
     .checkStyle i{
-        font-size: 17px;
+        font-size: 16px;
     }
 }
 
@@ -147,7 +154,7 @@
         background-size: 73% !important;
     }
     .selectAllTransDiv{
-        margin-left: 4px;
+        margin-left: 7px;
     }
     .innerBox{
         min-width: 480px;
@@ -186,7 +193,7 @@
         margin-left: 5px;
     }
     .selectAllTrans{
-        font-size: 17px ;
+        font-size: 16px ;
     }
     .checkStyle i{
         font-size: 15px;
@@ -252,10 +259,10 @@
         margin-left: 5px;
     }
     .selectAllTrans{
-        font-size: 15px ;
+        font-size: 14px ;
     }
     .checkStyle i{
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .thirdDiv > h1{
@@ -368,18 +375,13 @@
         padding: 8px 3px;
     }
     .selectAllTransDiv {
-        margin-left: 5px;
+        margin-left: 4px;
     }
     .selectAllTrans{
         font-size: 13px ;
     }
     .checkStyle i{
-        font-size: 11px;
-    }
-    
-    .thirdDiv > h1{
-        font-size: 18px;
-        padding: 8px 10px;
+        font-size: 12px;
     }
     .popUpContainer .popupBox{
         width: 90%;
@@ -418,8 +420,21 @@
     .filterBox h2 i{
         font-size: 1.3rem;
     }
-    .filterBox .cashflow > div span{
+    .amountRange{
+        height: 24px;
         margin: 5px 0;
+    }
+    .category .dropDown{
+        margin: 0;
+    }
+    .amountRange h1{
+        font-weight: lighter;
+    }
+    .amountRange h1 input{
+        margin: 5px 0;
+    }
+    .filterBox .cashflow > div span{
+        margin: 3px 0;
     }
     .popupBox *{
         font-size: 13px !important;
@@ -441,10 +456,21 @@
     } 
     .secondDiv{
         background-size: 95% !important;
+        padding: 5px;
     }   
+    .secondDiv h1, .thirdDiv>h1,.dashBoardHead{
+        font-size: 14px;
+    }
+    .dashBoardHead{
+        padding-left: 3px;
+    }
     .thirdDiv{
         min-height: 80px !important;
     }
+    .thirdDiv > h1{
+        padding: 6px 3px;
+    }
+
     .secondDiv h2,.noRecentTrans{
         font-size: 12px;
     }
@@ -487,7 +513,7 @@
         display: none;
     }
     .filterAndCancelBtn{
-        margin-top: 20px;
+        margin-top: 30px;
     }
     .secondDiv .chartBox, .chartDetails{
         min-width: 250px;
@@ -508,7 +534,6 @@
     .navbar-brand{
         background-position: 2px;
     }
-
     .TransactionHead th,
     .TransactionBody td{
         padding: 5px 2px
@@ -529,7 +554,6 @@
     .popupBox div input:not([type=radio]){
         height: 25px;
     }
-
     .NoDataFoundErr{
         height: 220px;
         padding: 0 10px;
@@ -553,8 +577,7 @@
     } 
     .transactionArticle form{
         height: 50%;
-    }
-
+    }   
     .totalSelectedTrans,.totalSelectedTrans b{
         font-size: 9px;
     }
@@ -577,13 +600,9 @@
         font-size: 8px;
         margin: 4px 1px;
     }
-
     .TransactionHead th,
     .TransactionBody td {
         font-size: 6.8px;
-    }
-    .selectAllTransDiv {
-        margin-left: 5px;
     }
     .selectAllTrans{
         font-size: 12px ;
@@ -591,5 +610,4 @@
     .checkStyle i{
         font-size: 10px;
     }
-    
 }   

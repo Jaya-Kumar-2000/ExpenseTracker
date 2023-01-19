@@ -135,7 +135,7 @@
 
   <template class="dashBoardSection">
     <article class="dashBoard">
-      <h1 class="dashBoardHead">Dashboard</h1>
+      <h1 class="dashBoardHead">Dashboard <span>(Last 30 days)</span></h1>
       <div class="firstDiv">
         <div class="income">
           <span></span>
@@ -154,11 +154,24 @@
           <p>Transactions</p>
         </div>
       </div>
-      <div class="secondDiv">
-        <h1>Total Expenses</h1>
+      <div class="secondDiv expeseChart">
+        <h1>Total Expesne</h1>
         <div class="chartSection">
           <div class="chartBox">  
-            <canvas id="myChart"></canvas>
+            <canvas id="myChartExpense"></canvas>
+          </div>
+          <div class="chartDetails">
+            <table><tbody></tbody></table>
+          </div>
+        </div>
+       
+      </div>
+
+      <div class="secondDiv incomeChart">
+        <h1>Total Income</h1>
+        <div class="chartSection">
+          <div class="chartBox">  
+            <canvas id="myChartIncome"></canvas>
           </div>
           <div class="chartDetails">
             <table><tbody></tbody></table>
@@ -201,11 +214,11 @@
         <form>
           <div class="range">
             <div class="from">
-              <label>From:</label>
+              <p>From:</p>
               <input type="date" name="Date" class="startingDate">
             </div>
             <div class="to">
-              <label>To:</label>
+              <p>To:</p>
               <input type="date" name="Date" class="endingDate">
             </div>
             <p class="filterError dateError"></p>
@@ -245,7 +258,7 @@
             </div>
           </div>
           <div class="category">
-            <label>Choose a Category</label>
+            <p>Choose a Category</p>
             <div class="dropDown">
               <div class="DropDownBody categoryList">
                 <h4><b class="category-icon business"></b><span>Business</span><i class="fa-regular fa-square filterCheck" id="business"></i></h4>

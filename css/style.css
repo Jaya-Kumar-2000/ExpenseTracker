@@ -405,7 +405,7 @@ li.removeBtn {
 	outline: var(--none);
 	border: var(--none);
 	background-color: var(--colorWhite);
-	margin: 50px var(--auto) 0;
+	margin: 50px 0 0;
 	font-size: 1rem;
 	letter-spacing: 1px;
 	cursor: var(--cursorPointer);
@@ -414,8 +414,7 @@ li.removeBtn {
 }
 
 .logoutBtn:hover {
-	color: #F50B02;
-	letter-spacing: 2px;
+	color: #ff3831;
 }
 
 .dialog {
@@ -486,6 +485,10 @@ li.removeBtn {
 	color: #94A6B3;
 	font-size: 1rem;
 	font-weight: 100;
+}
+.dashBoardHead span{
+	font-size: 11px;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .dashBoard>div {
@@ -626,7 +629,7 @@ article .firstDiv {
 	border-bottom: 1px solid #eaeaea;
 }
 
-.TransactionBody:hover:not(.backgroundAdd){
+.allTransDetails .TransactionBody:hover:not(.backgroundAdd){
 	background-color: rgb(221 221 221 / 30%);
 }
 
@@ -635,11 +638,11 @@ article .firstDiv {
 	position: relative;
 }
 .selectAllTrans{
-	font-size: 19px ;
+	font-size: 18px ;
 	opacity: .6;
 }
 .checkStyle i{
-	font-size: 18px;
+	font-size: 16px;
 	opacity: 0.6;	
 }
 .eachCheck,.allCheck{
@@ -923,7 +926,7 @@ input[type="checkbox"]{
 	background: var(--colorWhite);
 	box-shadow: 0 0 8px rgb(0 0 0 / 20%);
 	height: var(--hundredPercent);
-	min-height: 570px;
+	overflow: auto;
 	font-family: 'Nunito', sans-serif;
 }
 
@@ -933,6 +936,9 @@ input[type="checkbox"]{
 	padding: 10px 5px;
 	padding-left: 15px;
 	opacity: .6;
+}
+.filterBox p{
+	font-weight: bold;
 }
 
 .filterBox label {
@@ -995,7 +1001,7 @@ input[type="checkbox"]{
 .filterCheck {
 	position: var(--positionAbsolute);
 	right: 10px;
-	font-size: 18px;
+	font-size: 17px;
 	opacity: 0.7;
 }
 .fa-square{
@@ -1048,7 +1054,7 @@ input[type="checkbox"]{
 
 .filterAndCancelBtn button {
 	height: var(--hundredPercent);
-	background: #dedede;
+	background: #ececec;
 	border: var(--none);
 	outline: var(--none);
 	width: 70px;
@@ -1249,7 +1255,7 @@ input[type="checkbox"]{
 }
 
 .DropDownBody>h4:hover {
-	background-color: #ededed;
+    background-color: rgb(221 221 221 / 30%)
 }
 
 .category-icon {
@@ -1515,4 +1521,16 @@ input[type="checkbox"]{
 .noBtn:hover{
     background-image: linear-gradient(-180deg, #6890FB 0%, #4273F9 100%) !important;
     color: #FFFFFF !important;
+}
+
+::-webkit-scrollbar {
+	width: 3px;
+}
+::-webkit-scrollbar-thumb {
+	background: #c9c9c9;
+	border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+    background: #eef5f8;
+    border-radius: 5px;
 }
