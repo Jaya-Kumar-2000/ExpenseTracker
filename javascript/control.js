@@ -98,16 +98,18 @@ class Control {
     (this.model.getUserInfo(uId)).then(response => {
       this.userDetails = response;
       this.view.setUserInfo(response.user);
-      // this.model.getDahBoardData(this.userDetails.user.id);
-      this.model.getTransactionData(this.userDetails.user.id).then(res=>{
+      this.model.getDahBoardData(this.userDetails.user.id)
+      .then(res=>{
         if(res=="success"){
           this.dashBoardData();
         }
       });
+      this.model.getTransactionData(this.userDetails.user.id)
     })
   }
 
   dashBoardData = (e) => {
+
     this.model.popState("DashBoard")
     this.view.showDefaultDashBoared(e);
     this.loadDashBoardData();
@@ -115,10 +117,12 @@ class Control {
   }
 
   loadDashBoardData = () => {
-    this.model.lastMonthTrans();
+
     this.displayTransactionDetails();
     this.displayLastFiveTransaction();
-    this.displayChart();
+    this.displayExpenseChart();
+    this.displayIncomeChart();
+
   }
 
   displayTransactionDetails = () => {
@@ -129,17 +133,35 @@ class Control {
     this.view.lastFiveTransaction(this.model.lastFiveTransactions());
   }
 
-  displayChart = () => {
+  displayExpenseChart = () => {
     let isExpensehappened = this.model.lastMonthData.find(eachArr => eachArr.type.name === 'expense');
 
     if (isExpensehappened != undefined) {
-      _(".secondDiv").style.background = "#fff";
-      this.view.chart(this.model.expenseByCategory().keys, this.model.expenseByCategory().values,this.model.transactionDetails());
+      _(".expeseChart").style.background = "#fff";
+      let obj = this.model.expenseByCategory('expense')
+      this.view.expenseChart(obj,this.model.transactionDetails());
     }
     else {
-      _(".secondDiv").style.background = `#fff url("images/no-data-found.gif") center no-repeat`
+      _(".expeseChart").style.background = `#fff url("images/no-data-found.gif") center no-repeat`
     }
   }
+  
+
+  displayIncomeChart = () => {
+    let isIncomehappened = this.model.lastMonthData.find(eachArr => eachArr.type.name === 'income');
+
+    if (isIncomehappened != undefined) {
+      _(".incomeChart").style.background = "#fff";
+      let obj = this.model.expenseByCategory('income')
+      this.view.incomeChart(obj,this.model.transactionDetails());
+    }
+    else {
+      _(".incomeChart").style.background = `#fff url("images/no-data-found.gif") center no-repeat`
+    }
+  }
+  
+
+
 
   showBalanceInTrans = () => {
     this.view.balanceOfTrans(this.model.transactionDetails());
@@ -154,8 +176,6 @@ class Control {
     this.setupAddDashBoardEvent();
     this.eventForFilterBox();
   }
-
-
 
 
   displayAllTransaction = () => {
@@ -180,9 +200,8 @@ class Control {
 
   setEventsForDashBoard = () => {
     _(".linksDiv").querySelectorAll(".a").forEach((aTag) => {
-      aTag.addEventListener("click", this.view.changeButtonbackground)
+      aTag.addEventListener("click", this.view.changeButtonbackground);
     });
-
     _(".logoutBtn").addEventListener("click", this.model.logoutUser);
     _(".showInfo").addEventListener("click", this.view.showInfoFromLeft);
     _(".dialog").addEventListener("click", this.view.hideInfoFromLeft);
@@ -221,10 +240,8 @@ class Control {
     _(".editBtn").disabled = false;
     _(".editBtn").classList.add("editBtnHide");
 
-
     let arr = ["TD", "SPAN"]
     let clicedEle = e.target;
-
 
     if(_(".fa-square-check")==null){
       this.totalClickedCheckbox = 0;
@@ -354,9 +371,11 @@ class Control {
   }
 
   getCheckIndex = () => {
-    _(".allTransDetails tbody").addEventListener("mousedown", this.selectTransactions);
-    _(".selectAllTrans").addEventListener("mousedown", this.selectTransactions);
-    _(".allCheck").addEventListener("mousedown", this.selectTransactions);
+    if(_(".allTransDetails tbody")!=null){
+      _(".allTransDetails tbody").addEventListener("mousedown", this.selectTransactions);
+      _(".selectAllTrans").addEventListener("mousedown", this.selectTransactions);
+      _(".allCheck").addEventListener("mousedown", this.selectTransactions);
+    }
   }
 
   displaySearch = () => {
@@ -368,10 +387,8 @@ class Control {
 
   sendInputVal = (inputText) => {
     let arr = this.model.seachTransaction(inputText);
-
     _(".NoDataFoundErr") != null ? _(".NoDataFoundErr").remove() : '';
     _(".pagination") != null ? _(".pagination").remove() : '';
-
     if (arr.length == 0) {
       _(".editDelterBtn") != null ? _(".editDelterBtn").remove() : '';
       let clonedTemplate = _(".noTranaction").content.cloneNode(true);
@@ -408,18 +425,15 @@ class Control {
   }
 
   eventForNewTransaction = () => {
-
     this.view.addNewTransaction();
     this.setEventForNewTransDiv();
     this.showDropDownNewTransaction();
     this.view.closeAddTransactionPopup();
-
     let listofincome = _("#incomeDropDown").content.cloneNode(true);
     _(".popUpContainer .dropDown").prepend(listofincome);
   }
 
   storeNewTransactionData = (e) => {
-
     let typeOfTrans;
     let date = '';
     let amount = '';
@@ -427,6 +441,7 @@ class Control {
     let payMode = _(".popupBox .payMode span").classList[0];
     let desc = '';
     let errorArr = [];
+
     if (_(".incomeRadio").checked) {
       let income = _(".incomeRadio").value
       if (this.incomeOrExpense.includes(income)) {
@@ -439,24 +454,25 @@ class Control {
         typeOfTrans = expense;
       }
     }
+
     if (new Date(_(".transDate").value) < Date.now()) {
-      date = new Date(_(".transDate").value);
+      date = new Date(_(".transDate").value).toLocaleDateString();
     }
     else {
       errorArr.push("Invalid Date")
     }
-    if (_(".popupBox .amount").value > 0 && _(".popupBox .amount").value < 1000000) {
+
+    if (_(".popupBox .amount").value > 0 && _(".popupBox .amount").value < 10000000) {
       amount = Number(_(".popupBox .amount").value)
     }
     else {
-      errorArr.push("Invalid (0<Amount>1000000)")
+      errorArr.push("Invalid (0<Amount>10000000)")
     }
 
     if (typeOfTrans == "income") {
       if (!(this.incomeArr.includes(category))) {
         errorArr.push("Select Category");
         category = '';
-
       }
     }
     else {
@@ -465,7 +481,6 @@ class Control {
         category = '';
       }
     }
-
 
     if (!(this.paymodeArr.includes(payMode))) {
       errorArr.push("Select Pay Mode");
@@ -476,8 +491,14 @@ class Control {
       errorArr.push("Fill the Description");
     }
     else {
-      desc = _(".popupBox .description").value;
+      if((_(".popupBox .description").value).length>=50){
+        errorArr.push("Description should be < 30");
+      }
+      else{
+        desc = _(".popupBox .description").value;
+      }
     }
+
 
     let obj = {
       "account": {
@@ -498,35 +519,58 @@ class Control {
 
     if (date != '' && amount != "" && desc != '' && payMode != '' && category != '') {
       if (e.target.classList.contains("addTransaction")) {
-
         this.model.sendNewTransData(obj, this.userDetails.user.id)
-          .then(res => {
-            if (res.status == "success") {
-              // this.model.getDahBoardData(userId);
-              this.model.getTransactionData(this.userDetails.user.id)
-                .then(response => {
-                  this.view.showSuccessMsg(typeOfTrans);
-                  this.getDetails();
-                });
+        .then(res => {
+          if (res.status == "success") {
+
+            this.model.getDahBoardData(this.userDetails.user.id)
+
+            let key =Object.keys(res)[0];
+            let id;
+            if(key=="income" || key=="expense"){
+              id=res[key].id
             }
-          });
+            this.model.getaddedTrans(this.userDetails.user.id,id)
+            .then(res=>{
+              this.model.allTransactions.push(res[key]) 
+              this.view.showSuccessMsg(typeOfTrans);
+              this.displayAllTransaction();
+              this.setEventsForTransaction();
+              this.getDetails();
+            })
+          }
+        });
       }
 
       else if (e.target.classList.contains("editTansaction")) {
         this.totalClickedCheckbox = 0;
-
-        let objToEdit = this.model.allTransactions[this.editingIndex];
-
-        objToEdit.amount = amount;
-        objToEdit.category.name=category;
-        objToEdit.type.name=typeOfTrans;
-        objToEdit.pay_type.name=payMode;
-        objToEdit.description = desc;
-        objToEdit.date = date;
-   
-        this.model.updateTrans(this.userDetails.user.id, objToEdit.id, obj);
-
-        this.getDetails();
+        let id = this.model.allTransactions[this.editingIndex].id;
+      
+        this.model.updateTrans(this.userDetails.user.id, id, obj).then(res=>{
+          if(res=="success"){
+            this.model.getDahBoardData(this.userDetails.user.id)
+            
+            this.model.getEditedData(this.userDetails.user.id, id,this.editingIndex).then(res=>{
+              if(res.status=="success"){
+                this.getDetails();
+                let key =Object.keys(res)[0];
+                if(key=="income" || key=="expense"){
+                  let editedRow = (_(`.TransactionBody.row${res[key].id}`));
+                  editedRow.classList.remove("backgroundAdd");
+                  editedRow.querySelector(".eachCheck").classList.remove("fa-square-check")
+                  editedRow.querySelector(".catImg").innerHTML = `<b class="category-icon ${res[key].category.name}"></b> ${res[key].category.display_name}`;
+                  editedRow.querySelector(".transactionDate").innerText=  new Date(res[key].date).toLocaleDateString();
+                  editedRow.querySelector(".typeOfPay").innerText=  res[key].pay_type.display_name;
+                  editedRow.querySelector(".transDesc").innerText=  res[key].description;
+                  let amountDiv = editedRow.querySelector(".amountRightAllign");
+                  amountDiv.innerText=  res[key].amount;
+                  key === 'income' ? amountDiv.style.color = 'green' : amountDiv.style.color = 'red';
+                  _(".totalSelectedTrans").innerHTML = `0/<b>${this.model.allTransactions.length}</b>`;
+                }
+              }  
+            }) 
+          }
+        })
 
         let opc = 0;
         let time = setInterval(() => {
@@ -537,9 +581,7 @@ class Control {
           _(`.row${this.editingTrans}`) !=null ? _(`.row${this.editingTrans}`).removeAttribute("style"):'';
         }, 1500)
       }
-
       _(".popUpContainer").remove();
-
     }
     else {
       _(".errMsgNewTrans").innerText = errorArr[0];
@@ -550,46 +592,32 @@ class Control {
     }
   }
 
-
   getDetails = () => {
-    this.model.lastMonthTrans();
     this.showBalanceInTrans();
-    this.displayAllTransaction();
-    this.setEventsForTransaction();
-    this.sendInputVal(_(".search").value);
+    if (_(".search").value != '') {
+      this.displaySearch()
+    }
   }
 
   eventForEditBtn = () => {
     this.view.addNewTransaction();
-
     this.editingTrans = Number((_(".TransactionBody .fa-square-check").id));
-
-
     let arr = this.model.allTransactions;
-
     this.editingIndex = arr.findIndex(object => object.id === this.editingTrans);
-
     let editTransVal = arr[this.editingIndex];
-
     _(".popUpContainer h1").innerHTML = `Edit Transaction<i class="fa-solid fa-xmark closeBtn"></i>`;
     _(".popUpContainer .button2").classList.remove("addTransaction");
     _(".popUpContainer .button2").classList.add("editTansaction");
     _(".popUpContainer .button2").innerText = "Save";
-
     if (editTransVal.type.name == "income") {
-
       this.setListForEdit("incomeDropDown", "incomeRadio")
     }
     else {
       this.setListForEdit("ExpenseDropDown", "expenseRadio")
-
       _(".popUpContainer .expenseRadio").checked = "true";
     }
-
-    var today = new Date(editTransVal.date);
-
-
-    _(".popUpContainer .transDate").value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);;
+    _(".popUpContainer .transDate").value = new Date(editTransVal.date).toISOString().substring(0,10);
+   
     _(".popUpContainer .amount").value = editTransVal.amount;
     _(".popUpContainer .newCatHead span").classList.add(editTransVal.category.name);
     _(".popUpContainer .newCatHead span").innerText = editTransVal.category.display_name;
@@ -627,34 +655,43 @@ class Control {
         _(".deletePopUP").remove()
       }
     })
-
   }
 
   deleteTranasction = () => {
+    let obj = {"accounts": []}
+    let UID;
     document.querySelectorAll(".TransactionBody .fa-square-check").forEach((eachCheckBox) => {
       let tid = Number(eachCheckBox.id);
-      let index = this.model.allTransactions.findIndex(x => x.id === tid);
-      let UID = this.userDetails.user.id;
-      this.model.allTransactions.splice(index, 1)
-      this.model.deleteTransaction(UID, tid)
+      let lastMonthTransIndex = this.model.lastMonthData.findIndex(x => x.id === tid);
+      this.model.lastMonthData.splice(lastMonthTransIndex, 1);
+
+      let allTransIndex = this.model.allTransactions.findIndex(x => x.id === tid);
+      UID = this.userDetails.user.id;
+      eachCheckBox.parentNode.parentNode.remove();
+      this.model.allTransactions.splice(allTransIndex, 1);
+      obj.accounts.push(tid);
     });
 
-    setTimeout(() => {
-      _(".deletePopUP").remove();
-      this.totalClickedCheckbox = 0;
-      this.model.lastMonthTrans();
-      this.showBalanceInTrans();
-      this.displayAllTransaction();
-      this.setEventsForTransaction();
-      if (this.model.allTransactions.length == 0) {
-        _('.search').removeEventListener('input', this.displaySearch);
-      }
-      else {
-        if (_(".search").value != '') {
-          this.displaySearch()
+    this.model.deleteTransaction(UID, obj).then(res=>{
+      if(res=="success"){
+        _(".deletePopUP").remove();
+        this.totalClickedCheckbox = 0;
+
+        this.showBalanceInTrans();
+        if (this.model.allTransactions.length == 0) {
+          _('.search').removeEventListener('input', this.displaySearch);
+          document.querySelector(".allTransactionDiv").innerHTML = '';
+          let clonedTemplate = _(".noTranaction").content.cloneNode(true);
+          clonedTemplate.querySelector(".empty-state__message").innerText = "No Records Found";
+          _(".innerChild").append(clonedTemplate);
+        }
+        else {
+          if (_(".search").value != '') {
+            this.displaySearch();
+          }
         }
       }
-    }, 600)
+    })
   }
 
   showEditPopup = () => {
@@ -1101,4 +1138,96 @@ window.onload = new Control().init();
 
 
 
+
+// const obj = {
+//   "startDate": "2022-12-28",
+//   "endDate": "2023-01-09",
+//   "cashFlow": [
+//       "income",
+//       "expense"
+//   ],
+//   "payMode": [
+//       "cash",
+//       "debitCard",
+//       "creditCard",
+//       "UPI"
+//   ],
+//   "categories": [
+//       "business",
+//       "rent",
+//       "food",
+//       "bills",
+//       "utilities",
+//       "transportation",
+//       "insurance",
+//       "shopping",
+//       "entertainment",
+//       "salary",
+//       "healthCare",
+//       "housing",
+//       "extraIncome",
+//       "education",
+//       "clothing",
+//       "taxes",
+//       "interests",
+//       "miscellaneous",
+//       "personalCare"
+//   ],
+//   "minAmount": 1,
+//   "maxAmount": 12
+// }
+
+// const encodedData = (JSON.stringify(obj))
+
+// fetch(`https://www.example.com?users=${encodedData}`)
+//   .then(res => res.text())
+//   .then(res => console.log(res))
+//   .catch(err => console.error(err))
+
+
+// const permutator = (inputArr) => {
+//   let result = [];
+
+//   const permute = (arr, m = []) => {
+//     if (arr.length === 0) {
+//       result.push(m)
+//     } else {
+//       for (let i = 0; i < arr.length; i++) {
+//         let curr = arr.slice();
+//         let next = curr.splice(i, 1);
+//         permute(curr.slice(), m.concat(next))
+//      }
+//    }
+//  }
+
+//  permute(inputArr)
+
+//  return result;
+// }
+
+
+// console.log(permutator([1,1,2]));
+
+
+// var permArr = [],
+//   usedChars = [];
+
+// function permute(input) {
+//   var i, ch;
+//   for (i = 0; i < input.length; i++) {
+//     ch = input.splice(i, 1)[0];
+//     usedChars.push(ch);
+//     if (input.length == 0) {
+//       permArr.push(usedChars.slice());
+//     }
+//     permute(input);
+
+//     input.splice(i, 0, ch);
+//     usedChars.pop();
+//   }
+//   return permArr
+// };
+
+
+// document.write(JSON.stringify(permute([5, 3, 7, 1])));
 

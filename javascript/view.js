@@ -5,6 +5,9 @@ class View {
     this.currentPage = 1;
     this.pageCount = 1;
     this.lengthOfTranasaction = 0;
+    this.label;
+    this.datas;
+    this.chartData;
   }
 
   transactionDetails = (details) => {
@@ -21,7 +24,6 @@ class View {
 
   lastFiveTransaction = (arr) => {
     if (arr.length != 0) {
-
       let recentTransHead = `<tr class="TransactionHead">
       <th>Date</th>
       <th>Category</th>
@@ -76,7 +78,6 @@ class View {
 
 
   allTransaction = (arr) => {
-
     this.lengthOfTranasaction = arr.length;
 
     let allTranactionDetails = `<div class="editDelterBtn">
@@ -105,14 +106,14 @@ class View {
     </thead>
     <tbody>
     </tbody>
-  </table>
-`;
+  </table>`;
 
     document.querySelector('.allTransactionDiv').innerHTML = allTranactionDetails;
 
     let docFrag = new DocumentFragment();
 
     arr.forEach((element) => {
+
       let divEle = document.createElement('tr');
       divEle.setAttribute('class', `TransactionBody row${element.id}`);
 
@@ -128,14 +129,17 @@ class View {
       category.setAttribute("class","catImg")
       category.innerHTML = `<b class="category-icon ${element.category.name}"></b> ${element.category.display_name}`;
 
-      let date = document.createElement('td');
-      date.textContent = new Date(element.date).toLocaleDateString();
+      let dateField = document.createElement('td');
+      dateField.setAttribute("class","transactionDate")
+      dateField.textContent = new Date(element.date).toLocaleDateString();
 
       let payMode = document.createElement('td');
+      payMode.setAttribute("class","typeOfPay")
       payMode.textContent = element.pay_type.display_name;
 
 
       let description = document.createElement('td');
+      description.setAttribute("class","transDesc")
       description.textContent = element.description;
 
       let amount = document.createElement('td');
@@ -145,7 +149,7 @@ class View {
 
       divEle.appendChild(checkBoxTableRow);
       divEle.appendChild(category);
-      divEle.appendChild(date);
+      divEle.appendChild(dateField);
       divEle.appendChild(payMode);
       divEle.appendChild(description);
       divEle.appendChild(amount);
@@ -173,44 +177,66 @@ class View {
 
   }
 
-  chart = (label, datas,expeseVal) => {
+  expenseChart = (obj,totalAmount) => {
 
-    let totalExpense = expeseVal.expense;
+    this.label = obj.keys;
+    this.datas =  obj.values;
 
     let bg = ['#F64069','#F3EFE0','#3BA2EB','#FACD57','#333','#8fa292','#877a62','#3cc793','#1208b1','#8e8c39','#11d8a3','#aae600','#7251d6','#91714a','#e86800','#76971d']
-    label.forEach((eachExpense,index)=>{
-      let tableRow = `<tr>
-      <td class="colorCircle"><span class="expeseColor" style="background-color: ${bg[index]}"></span></td>
-      <td>${eachExpense}</td>
-      <td>&#8377;${datas[index]}</td>
-      <td>${((datas[index]/totalExpense)*100).toFixed(2)}%</td>
-      </tr>`;
+    this.createTable(totalAmount.expense,bg,"expeseChart")
 
-      _(".chartDetails tbody").innerHTML+=tableRow;
-    })
+    new Chart(_('#myChartExpense'),this.createChart('doughnut'));
+  }
 
-    // console.log(label,datas)
-    const data = {
-      labels: label,
-      datasets: [{
-        backgroundColor: bg,
-        data: datas,
-      }]
-    };
+  incomeChart = (obj,totalAmount)=>{
 
-    new Chart(
-      document.getElementById('myChart'),{
-      type: 'doughnut',
-      data: data,
+    this.label = obj.keys;
+    this.datas =  obj.values;
+
+    let bg = ['#453C67','#F2F7A1','#46C2CB','#FEA1BF']
+    this.createTable(totalAmount.income,bg,"incomeChart")
+
+    new Chart(_('#myChartIncome'),this.createChart('pie'));
+  }
+
+
+  createChart = (type)=>{
+    return {
+      type: type,
+      data: this.chartData,
       options: {
         plugins: {
             legend: {
                 display: false,
             }
         }
+      }
     }
-    });
   }
+
+  createTable = (amount,bg,placeTable)=>{
+    this.chartData = {
+      labels: this.label,
+      datasets: [{
+        borderWidth: 0,
+        backgroundColor: bg,
+        data: this.datas,
+      }]
+    };
+
+    this.label.forEach((eachExpense,index)=>{
+      let tableRow = `<tr>
+      <td class="colorCircle"><span class="expeseColor" style="background-color: ${bg[index]}"></span></td>
+      <td>${eachExpense}</td>
+      <td>&#8377;${this.datas[index]}</td>
+      <td>${((this.datas[index]/amount)*100).toFixed(2)}%</td>
+      </tr>`;
+  
+      _(`.${placeTable} tbody`).innerHTML+=tableRow;
+    })
+  }
+
+
 
 
   setUserInfo = (data) => {
