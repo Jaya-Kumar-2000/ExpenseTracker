@@ -19,22 +19,38 @@ class Model {
     this.income = 0;
     this.expense = 0;
     this.id = 0;
-    this.lastMonthData;
+    this.lastMonthData=[];
   }
 
   getDahBoardData = (id) => {
-    let arr = [];
-    this.allTransactions = [];
-    // let today = new Date();
-    // console.log(today.toLocaleDateString())
-    // let newDate = new Date();
-    // newDate.setMonth(new Date().getMonth() - 1);
-    // console.log(newDate.toLocaleDateString())
+    this.lastMonthData = [];
 
+    let currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+    let day = currentDate.getDate()
+    let month = currentDate.getMonth() + 1
+    let year = currentDate.getFullYear()
+
+    let today = year+"/"+month+"/"+day;
+
+    let newDate = new Date();
+    newDate.setMonth(new Date().getMonth() - 1);
+    let lastMoth = newDate.toLocaleDateString().split("/").reverse().join("/")
+    return fetch(`http://localhost:8089/api/v1/users/${id}/accounts?start_date=${lastMoth}&end_date=${today}`)
+    .then(res => {
+      if (res.status != 204) {
+        return res.json();
+      }
+    })
+    .then(res => {
+        if(res!=undefined){
+          this.lastMonthData = res.accounts;
+        }
+        return "success";
+    })
   }
 
   getTransactionData = (id) => {
-    return fetch(`http://172.24.205.76:8089/api/v1/users/${id}/accounts`)
+    return fetch(`http://localhost:8089/api/v1/users/${id}/accounts`)
       .then(res => {
         if (res.status != 204) {
           return res.json();
@@ -42,7 +58,7 @@ class Model {
       })
       .then(res => {
         if(res!=undefined){
-         this.allTransactions = res.accounts;
+          this.allTransactions = res.accounts;
         }
         return "success";
       })
@@ -50,7 +66,10 @@ class Model {
 
   seachTransaction = (inputText) => { //search based on description || Category
     let userInput = inputText.toLowerCase();
+
+
     let filteredArray = this.allTransactions.filter(function (ele) {
+      console.log()
       return (ele.description.toLowerCase().includes(userInput) || ele.category.display_name.toLowerCase().includes(userInput))
     })
     return filteredArray;
@@ -58,15 +77,15 @@ class Model {
 
 
   lastFiveTransactions = () => {
-    let temp = this.allTransactions.slice();
+    let temp = this.lastMonthData.slice();
     return temp.splice(-5);
   }
 
-  expenseByCategory = () => {
+  expenseByCategory = (type) => {
     let obj = {}
 
     this.lastMonthData.forEach(function (data) {
-      if (data.type.name == 'expense') {
+      if (data.type.name == type) {
 
         const val = data.category.display_name;
         if (obj[val]) {
@@ -85,9 +104,6 @@ class Model {
   }
 
 
-  lastMonthTrans = () => {
-    this.lastMonthData = this.allTransactions.slice().splice(-10);
-  }
 
   transactionDetails = () => {
     this.income = 0;
@@ -102,7 +118,7 @@ class Model {
       income: this.income,
       expense: this.expense,
       balance: this.income - this.expense,
-      totalTransaction: this.allTransactions.slice(0, 10).length
+      totalTransaction: this.lastMonthData.length
     }
   }
 
@@ -159,7 +175,7 @@ class Model {
   }
 
   getUserInfo = (uID) => {
-    return fetch(`http://172.24.205.76:8089/api/v1/users/${uID}`)
+    return fetch(`http://localhost:8089/api/v1/users/${uID}`)
       .then(res => {
         return res.json();
       })
@@ -174,7 +190,7 @@ class Model {
   }
 
   editUserInfo = (uID, editData) => {
-    fetch(`http://172.24.205.76:8089/api/v1/users/${uID}`, {
+    fetch(`http://localhost:8089/api/v1/users/${uID}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -184,7 +200,7 @@ class Model {
   }
 
   editPassWord = (obj) => {
-    return fetch(`http://172.24.205.76:8089/api/v1/users/reset/password`, {
+    return fetch(`http://localhost:8089/api/v1/users/reset/password`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -196,34 +212,60 @@ class Model {
   }
 
   sendNewTransData = (obj, userId) => {
-    return fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts`, {
+    return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
       },
       body: JSON.stringify(obj)
     }).then(res => res.json())
       .then(data => data)
   }
 
-  deleteTransaction = (userId, transID) => {
-    fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts/${transID}`, {
+  getaddedTrans = (userId,transID)=>{
+    return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts/${transID}`, {
+      method: 'GET',
+    }).then(res => res.json())
+      .then(data => data)
+  }
+
+  deleteTransaction = (userId, delArr) => {
+
+    return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts`, {
       method: 'DELETE',
-    })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(delArr)
+    }).then(res => res.json())
+      .then(data => data.status)
   }
 
   updateTrans = (userId, transID, obj) => {
-    fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts/${transID}`, {
+    return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts/${transID}`, {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8'
       },
       body: JSON.stringify(obj)
-    })
+    }).then(res => res.json())
+    .then(data => data.status)
   }
 
+  getEditedData = (userId, transID,index)=>{
+    return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts/${transID}`, {
+      method: 'GET',
+    }).then(res => res.json())
+    .then(data => {
+      if('expense' in data){
+        this.allTransactions[index] = data.expense;
+      }
+      else{
+        this.allTransactions[index] = data.income;
+      }
+      return data;  
+    })
+  }
 
   popState = (state) => {
     window.onpopstate = function () {

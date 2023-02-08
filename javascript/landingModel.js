@@ -112,7 +112,7 @@ class landingModel {
     logUnUser = (e) => {
         e.preventDefault();
         if(navigator.onLine){
-            fetch('http://172.24.205.76:8089/api/v1/auth', {
+            fetch('http://localhost:8089/api/v1/auth', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -395,7 +395,7 @@ class landingModel {
 
 	sendNewUserData = () => {
 
-		fetch('http://172.24.205.76:8089/api/v1/users', {
+		fetch('http://localhost:8089/api/v1/users', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
