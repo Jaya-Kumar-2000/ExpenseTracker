@@ -35,7 +35,11 @@ class Model {
     let newDate = new Date();
     newDate.setMonth(new Date().getMonth() - 1);
     let lastMoth = newDate.toLocaleDateString().split("/").reverse().join("/")
+<<<<<<< HEAD
     return fetch(`http://localhost:8089/api/v1/users/${id}/accounts?start_date=${lastMoth}&end_date=${today}`)
+=======
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${id}/accounts?start_date=${lastMoth}&end_date=${today}`)
+>>>>>>> c867786f6b01db8865ae2aeb8155da65475f03ea
     .then(res => {
       if (res.status != 204) {
         return res.json();
@@ -223,7 +227,11 @@ class Model {
   }
 
   getaddedTrans = (userId,transID)=>{
+<<<<<<< HEAD
     return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts/${transID}`, {
+=======
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts/${transID}`, {
+>>>>>>> c867786f6b01db8865ae2aeb8155da65475f03ea
       method: 'GET',
     }).then(res => res.json())
       .then(data => data)
@@ -231,7 +239,11 @@ class Model {
 
   deleteTransaction = (userId, delArr) => {
 
+<<<<<<< HEAD
     return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts`, {
+=======
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts`, {
+>>>>>>> c867786f6b01db8865ae2aeb8155da65475f03ea
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -242,7 +254,11 @@ class Model {
   }
 
   updateTrans = (userId, transID, obj) => {
+<<<<<<< HEAD
     return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts/${transID}`, {
+=======
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts/${transID}`, {
+>>>>>>> c867786f6b01db8865ae2aeb8155da65475f03ea
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
@@ -253,7 +269,11 @@ class Model {
   }
 
   getEditedData = (userId, transID,index)=>{
+<<<<<<< HEAD
     return fetch(`http://localhost:8089/api/v1/users/${userId}/accounts/${transID}`, {
+=======
+    return fetch(`http://172.24.205.76:8089/api/v1/users/${userId}/accounts/${transID}`, {
+>>>>>>> c867786f6b01db8865ae2aeb8155da65475f03ea
       method: 'GET',
     }).then(res => res.json())
     .then(data => {
